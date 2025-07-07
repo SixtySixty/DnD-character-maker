@@ -1,92 +1,94 @@
 from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, CallbackQueryHandler, filters
 from telegram import InlineKeyboardButton, ReplyKeyboardMarkup, InlineKeyboardMarkup, InputMediaPhoto
+from telegram.constants import ParseMode
 from utils.logger import logger
+from .data import class_features, race_info
 
 RACE, CLASS, LEVEL, CHARACTERISTICS, NAME, AGE, APPEARANCE, WORLDVIEW, BACKSTORY = range(9)
 
 
+# function that generates the inline_keyboard
+
+def build_inline_keyboard(
+    items: list[str],
+    row_width: int = 2,
+    callback_prefix: str = '',
+    add_desc_button: bool = False,
+    desc_callback_data: str = '',
+    add_back_button: bool = False,
+    back_callback_data: str = ''
+) -> InlineKeyboardMarkup:
+    keyboard = []
+    for i in range(0, len(items), row_width):
+        row = items[i:i+row_width]
+        keyboard.append([InlineKeyboardButton(text=item, callback_data=f'{callback_prefix}{item}') for item in row])
+    if add_desc_button and desc_callback_data:
+        keyboard.append([InlineKeyboardButton('Description', callback_data=desc_callback_data)])
+    if add_back_button and back_callback_data:
+        keyboard.append([InlineKeyboardButton('Back', callback_data=back_callback_data)])
+    return InlineKeyboardMarkup(keyboard)
 
 
 
+
+
+# choosing a race + descriptions
 
 async def character_race(update, context):
     logger.info('Race asked')
 
-    keyboard = [
-        [InlineKeyboardButton(race, callback_data=f'{race}') for race in ["Elf", "Dwarf"]],
-        [InlineKeyboardButton(race, callback_data=f'{race}') for race in ["Human", "Half-orc"]],
-        [InlineKeyboardButton(race, callback_data=f'{race}') for race in ["Half-elf", "Dragonborn"]],
-        [InlineKeyboardButton(race, callback_data=f'{race}') for race in ["Gnome", "Halfling"]],
-        [InlineKeyboardButton("Tiefling", callback_data='Tiefling')],
-        [InlineKeyboardButton("Race Description", callback_data='character_race_desc')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-
-    caption = ( 
-        "Step 1: Choose Your Character’s Race\n\nThe world of Dungeons & Dragons is filled with diverse and fascinating races, each with their own unique cultures, abilities, and histories. Will your hero be a wise Elf, a resilient Dwarf, a resourceful Human, or perhaps a mysterious Tiefling?\n\nSelect your character’s race from the keyboard below or type your own choice. Let your imagination guide you!"
+    keyboard = build_inline_keyboard(
+        items=list(race_info.keys()),
+        row_width=3,
+        callback_prefix='desc_'
     )
 
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_race.png', 'rb') as photo:
+    with open('media/dnd_race.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=update.effective_chat.id,
             message_id=update.callback_query.message.message_id,
-            reply_markup=reply_markup,
+            reply_markup=keyboard,
             media=InputMediaPhoto(
                 media=photo,
-                caption=caption,
+                parse_mode=ParseMode.MARKDOWN,
+                caption="*Step 1: Choose Your Character’s Race*\n\nThe world of *Dungeons & Dragons* is filled with diverse and fascinating races, each with their own unique cultures, abilities, and histories. Will your hero be a wise Elf, a resilient Dwarf, a resourceful Human, or perhaps a mysterious Tiefling?\n\nSelect your character’s race from the keyboard below and read a short description. Let your imagination guide you!",
             )
-    )
+        )
 
 
     return RACE
 
 
-async def show_race_description_menu(update, context):
-    query = update.callback_query
-    await query.answer()
-    keyboard = [
-        [InlineKeyboardButton(race, callback_data=f'desc_{race}') for race in ["Elf", "Dwarf"]],
-        [InlineKeyboardButton(race, callback_data=f'desc_{race}') for race in ["Human", "Half-orc"]],
-        [InlineKeyboardButton(race, callback_data=f'desc_{race}') for race in ["Half-elf", "Dragonborn"]],
-        [InlineKeyboardButton(race, callback_data=f'desc_{race}') for race in ["Gnome", "Halfling"]],
-        [InlineKeyboardButton("Tiefling", callback_data='desc_Tiefling')],
-        [InlineKeyboardButton("Back", callback_data='back_to_race')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_caption(
-        caption="Choose a race to learn more about it:",
-        reply_markup=reply_markup
-    )
-
-
-RACE_DESCRIPTIONS = {
-    "Elf": "Elves are graceful, magical people of otherworldly beauty, living in the world but not entirely part of it.",
-    "Dwarf": "Dwarves are known for their skill in warfare, their ability to withstand physical and magical punishment, and their hard work.",
-    "Human": "Humans are the most adaptable and ambitious people among the common races.",
-    "Half-orc": "Half-orcs are strong and brave, often facing prejudice but proving themselves through their actions.",
-    "Half-elf": "Half-elves combine what some say are the best qualities of their elf and human parents.",
-    "Dragonborn": "Dragonborn look very much like dragons standing erect in humanoid form, though they lack wings or a tail.",
-    "Gnome": "A gnome’s energy and enthusiasm for living shines through every inch of his or her tiny body.",
-    "Halfling": "Halflings are an optimistic and cheerful people, known for their resourcefulness.",
-    "Tiefling": "Tieflings are known for their cunning and personal allure, but also for their fiendish heritage."
-}
-
-
-async def show_race_description(update, context):
+async def show_race_desc(update, context):
     query = update.callback_query
     await query.answer()
     race = query.data.replace('desc_', '')
-    description = RACE_DESCRIPTIONS.get(race, "No description available.")
-    keyboard = [
-        [InlineKeyboardButton("Back", callback_data='character_race_desc')]
-    ]
+
+    race_data = race_info.get(race, {})
+    description = race_data.get("description", "No description available.")
+    image_path = race_data.get("image", None)
+
+    keyboard = [[InlineKeyboardButton("Choose this", callback_data=race)], [InlineKeyboardButton("Back", callback_data='back_to_race')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_caption(
-        caption=f"<b>{race}</b>\n\n{description}",
-        reply_markup=reply_markup,
-        parse_mode="HTML"
-    )
+
+    if image_path:
+        with open(image_path, "rb") as photo:
+            await context.bot.edit_message_media(
+                chat_id=update.effective_chat.id,
+                message_id=query.message.message_id,
+                reply_markup=reply_markup,
+                media=InputMediaPhoto(
+                    media=photo,
+                    caption=f"*{race}*\n\n{description}",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
+        await query.edit_message_caption(
+            caption=f"*{race}*\n\n{description}",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
 
 
 
@@ -97,31 +99,102 @@ async def show_race_description(update, context):
 
 
 
+# choosing character class + descriptions
 
 
 async def character_class(update, context):
     logger.info('Class asked')
 
+    keyboard = build_inline_keyboard(
+        items=list(class_features.keys()),
+        row_width=3,
+        callback_prefix='desc_'
+    )
+
+    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_class.png', 'rb') as photo:
+        await context.bot.edit_message_media(
+            chat_id=update.effective_chat.id,
+            message_id=update.callback_query.message.message_id,
+            reply_markup=keyboard,
+            media=InputMediaPhoto(
+                media=photo,
+                caption="Step 2: Select Your Character’s Class\n\nA character’s class determines their skills, strengths, and the role they play in the party. Will you wield powerful magic as a Wizard, sneak through the shadows as a Thief, or charge into battle as a Barbarian?\n\nChoose your class from the options below. This is the heart of your hero’s abilities!",
+            )
+        )
+
+    return CLASS
+
+
+
+
+
+async def show_class_desc(update, context):
+    query = update.callback_query
+    await query.answer()
+
+    character_class = query.data.replace('desc_', '')
+
+    class_info = class_features.get(character_class, {})
+    description = class_info.get("description", "No description available.")
+    image_path = class_info.get("image", None)  # путь к картинке
+
+    keyboard = [[InlineKeyboardButton("Choose this", callback_data=character_class)], [InlineKeyboardButton("Back", callback_data='back_to_class')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    if image_path:
+        with open(image_path, "rb") as photo:
+            await context.bot.edit_message_media(
+                chat_id=update.effective_chat.id,
+                message_id=query.message.message_id,
+                reply_markup=reply_markup,
+                media=InputMediaPhoto(
+                    media=photo,
+                    caption=f"*{character_class}*\n\n{description}",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
+        await query.edit_message_caption(
+            caption=f"*{character_class}*\n\n{description}",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+
+
+# characteristics
+
+
+async def character_characteristics(update, context):
+    logger.info('Characteristics asked')
+
+    query = update.callback_query
+    await query.answer()
+    character_class = query.data
+
     keyboard = [
-        [InlineKeyboardButton("Barbarian", callback_data='Barbarian'), InlineKeyboardButton("Bard", callback_data='Bard')],
-        [InlineKeyboardButton("Cleric", callback_data='Cleric'), InlineKeyboardButton("Druid", callback_data='Druid')],
-        [InlineKeyboardButton("Fighter", callback_data='Fighter'), InlineKeyboardButton("Monk", callback_data='Monk')],
-        [InlineKeyboardButton("Paladin", callback_data='Paladin'), InlineKeyboardButton('Rogue', callback_data='Rogue')], 
-        [InlineKeyboardButton('Sorcerer', callback_data='Sorcerer'), InlineKeyboardButton('Warlock', callback_data='Wizard')],
-        [InlineKeyboardButton('Ranger', callback_data='Ranger')],
-        [InlineKeyboardButton('Class Description', callback_data='character_class_description')]
+        [InlineKeyboardButton('Characteristics Description', callback_data='character_characteristics_description')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_class.png', 'rb') as photo:
+    context.user_data['character_class'] = character_class
+
+    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_characteristics.png', 'rb') as photo:
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=photo,
-            caption="Step 2: Select Your Character’s Class\n\nA character’s class determines their skills, strengths, and the role they play in the party. Will you wield powerful magic as a Wizard, sneak through the shadows as a Thief, or charge into battle as a Barbarian?\n\nChoose your class from the options below. This is the heart of your hero’s abilities!",
+            caption="Step 3: Define Your Character’s Characteristics\n\nEvery hero has unique traits that set them apart. Think about your character’s strengths, weaknesses, and special talents. Are they incredibly strong, remarkably clever, or perhaps exceptionally charming?\n\nDescribe the main characteristics of your character. This will shape how they interact with the world!",
             reply_markup=reply_markup
-        )
-    
-    return CLASS
+    )
+
+    return CHARACTERISTICS
+
+
+
+
+
+
+
+
 
 
 
@@ -158,29 +231,8 @@ async def character_level(update, context):
 
 
 
-async def character_characteristics(update, context):
-    logger.info('Characteristics asked')
 
-    query = update.callback_query
-    await query.answer()
-    character_class = query.data
 
-    keyboard = [
-        [InlineKeyboardButton('Characteristics Description', callback_data='character_characteristics_description')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    context.user_data['character_class'] = character_class
-
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_characteristics.png', 'rb') as photo:
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo,
-            caption="Step 3: Define Your Character’s Characteristics\n\nEvery hero has unique traits that set them apart. Think about your character’s strengths, weaknesses, and special talents. Are they incredibly strong, remarkably clever, or perhaps exceptionally charming?\n\nDescribe the main characteristics of your character. This will shape how they interact with the world!",
-            reply_markup=reply_markup
-    )
-
-    return CHARACTERISTICS
 
 
 
@@ -343,14 +395,15 @@ character_creation = ConversationHandler(
     entry_points=[CallbackQueryHandler(character_race, pattern='^start_button$')],
     states={
         RACE: [
-            CallbackQueryHandler(show_race_description_menu, pattern='^character_race_desc$'),
-            CallbackQueryHandler(show_race_description, pattern='^desc_'),
-            CallbackQueryHandler(show_race_description_menu, pattern='^back_to_race_desc$'),
-            CallbackQueryHandler(character_class, pattern='^(Elf|Dwarf|Human|Half-orc|Half-elf|Dragonborn|Gnome|Halfling|Tiefling)$'),
+            CallbackQueryHandler(character_class, pattern='^(Hill Dwarf|Mountain Dwarf|High Elf|Wood Elf|Dark Elf (Drow)|Lightfoot Halfling|Stout Halfling|Human|Dragonborn|Forest Gnome|Rock Gnome|Half-Elf|Half-Orc|Tiefling)$'),
+            CallbackQueryHandler(show_race_desc, pattern='^desc_'),
             CallbackQueryHandler(character_race, pattern='^back_to_race$'),
-            # CallbackQueryHandler(character_class)
         ],
-        CLASS: [CallbackQueryHandler(character_characteristics)],
+        CLASS: [
+            CallbackQueryHandler(character_characteristics, pattern='^(Barbarian|Cleric|Fighter|Paladin|Sorcerer|Ranger|Bard|Druid|Monk|Rogue|Warlock|Wizard)$'),
+            CallbackQueryHandler(show_class_desc, pattern='^desc_'),
+            CallbackQueryHandler(character_class, pattern='^back_to_class$')
+        ],
         CHARACTERISTICS: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_name)],
         NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_age)],
         AGE: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_appearance)],
