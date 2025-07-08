@@ -17,4 +17,4 @@ if __name__ == '__main__':
     app.add_handler(character_creation)
 
     logger.info('Poiling')
-    app.run_polling(poll_interval=1)
+    app.run_polling(poll_interval=3)

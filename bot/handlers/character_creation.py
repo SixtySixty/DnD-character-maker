@@ -9,24 +9,18 @@ RACE, CLASS, LEVEL, CHARACTERISTICS, NAME, AGE, APPEARANCE, WORLDVIEW, BACKSTORY
 
 # function that generates the inline_keyboard
 
-def build_inline_keyboard(
-    items: list[str],
-    row_width: int = 2,
-    callback_prefix: str = '',
-    add_desc_button: bool = False,
-    desc_callback_data: str = '',
-    add_back_button: bool = False,
-    back_callback_data: str = ''
-) -> InlineKeyboardMarkup:
+def build_inline_keyboard(items, data_dict, row_width=2, callback_prefix=''):
     keyboard = []
     for i in range(0, len(items), row_width):
         row = items[i:i+row_width]
-        keyboard.append([InlineKeyboardButton(text=item, callback_data=f'{callback_prefix}{item}') for item in row])
-    if add_desc_button and desc_callback_data:
-        keyboard.append([InlineKeyboardButton('Description', callback_data=desc_callback_data)])
-    if add_back_button and back_callback_data:
-        keyboard.append([InlineKeyboardButton('Back', callback_data=back_callback_data)])
+        keyboard.append([
+            InlineKeyboardButton(
+                text=data_dict[item].get('title', item),
+                callback_data=f'{callback_prefix}{item}'
+            ) for item in row
+        ])
     return InlineKeyboardMarkup(keyboard)
+
 
 
 
@@ -37,11 +31,7 @@ def build_inline_keyboard(
 async def character_race(update, context):
     logger.info('Race asked')
 
-    keyboard = build_inline_keyboard(
-        items=list(race_info.keys()),
-        row_width=3,
-        callback_prefix='desc_'
-    )
+    keyboard = build_inline_keyboard(list(race_info.keys()), race_info, row_width=3, callback_prefix='menu_')
 
     with open('media/dnd_race.png', 'rb') as photo:
         await context.bot.edit_message_media(
@@ -51,26 +41,35 @@ async def character_race(update, context):
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
-                caption="*Step 1: Choose Your Character’s Race*\n\nThe world of *Dungeons & Dragons* is filled with diverse and fascinating races, each with their own unique cultures, abilities, and histories. Will your hero be a wise Elf, a resilient Dwarf, a resourceful Human, or perhaps a mysterious Tiefling?\n\nSelect your character’s race from the keyboard below and read a short description. Let your imagination guide you!",
+                caption=(
+                    "*Step 1: Choose Your Character’s Race*\n\n"
+                    "The world of *Dungeons & Dragons* is filled with diverse and fascinating races, each with their own unique cultures, abilities, and histories. "
+                    "Will your hero be a wise Elf, a resilient Dwarf, a resourceful Human, or perhaps a mysterious Tiefling?\n\n"
+                    "Select your character’s race from the keyboard below and read a short description. Let your imagination guide you!"
+                )
             )
         )
-
-
     return RACE
 
 
-async def show_race_desc(update, context):
+
+
+async def show_race_menu(update, context):
     query = update.callback_query
     await query.answer()
-    race = query.data.replace('desc_', '')
-
+    race = query.data.replace('menu_', '')
     race_data = race_info.get(race, {})
-    description = race_data.get("description", "No description available.")
+    race_title = race_data.get("title", "No title available.")
+    race_description = race_data.get("description", "No description available.")
     image_path = race_data.get("image", None)
-
-    keyboard = [[InlineKeyboardButton("Choose this", callback_data=race)], [InlineKeyboardButton("Back", callback_data='back_to_race')]]
+    context.user_data["character_race"] = race
+    keyboard = [
+        [InlineKeyboardButton("Detailed description", callback_data='show_race_desc'),
+         InlineKeyboardButton("Features", callback_data='show_race_features')],
+        [InlineKeyboardButton("Choose this", callback_data=f'character_race_{race}')],
+        [InlineKeyboardButton("Back", callback_data='back_to_race')]
+    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
@@ -79,68 +78,79 @@ async def show_race_desc(update, context):
                 reply_markup=reply_markup,
                 media=InputMediaPhoto(
                     media=photo,
-                    caption=f"*{race}*\n\n{description}",
+                    caption=f"*{race_title}*\n\n{race_description}",
                     parse_mode="Markdown"
                 )
             )
     else:
         await query.edit_message_caption(
-            caption=f"*{race}*\n\n{description}",
+            caption=f"*{race_title}*\n\n{race_description}",
             reply_markup=reply_markup,
             parse_mode="Markdown"
         )
 
+async def show_race_more_info(update, context):
+    query = update.callback_query
+    await query.answer()
+    race = context.user_data.get("character_race")
+    race_data = race_info.get(race, {})
+    if query.data == "show_race_desc":
+        title = "Detailed description"
+        text = race_data.get("detailed_description", "No description available.")
+    elif query.data == "show_race_features":
+        title = "Features"
+        text = race_data.get("features", "No features available.")
+    else:
+        title = "Info"
+        text = "No info available."
+    keyboard = [[InlineKeyboardButton('Back', callback_data=f'menu_{race}')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_caption(
+        caption=f"*{race_data.get('title', race)} — {title}*\n\n{text}",
+        reply_markup=reply_markup,
+        parse_mode="Markdown"
+    )
 
 
 
-
-
-
-
-
-
-# choosing character class + descriptions
 
 
 async def character_class(update, context):
     logger.info('Class asked')
 
-    keyboard = build_inline_keyboard(
-        items=list(class_features.keys()),
-        row_width=3,
-        callback_prefix='desc_'
-    )
+    keyboard = build_inline_keyboard(list(class_features.keys()), class_features, row_width=3, callback_prefix='desc_')
 
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_class.png', 'rb') as photo:
+    with open('media/dnd_class.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=update.effective_chat.id,
             message_id=update.callback_query.message.message_id,
             reply_markup=keyboard,
             media=InputMediaPhoto(
                 media=photo,
-                caption="Step 2: Select Your Character’s Class\n\nA character’s class determines their skills, strengths, and the role they play in the party. Will you wield powerful magic as a Wizard, sneak through the shadows as a Thief, or charge into battle as a Barbarian?\n\nChoose your class from the options below. This is the heart of your hero’s abilities!",
+                parse_mode=ParseMode.MARKDOWN,
+                caption=(
+                    "*Step 2: Select Your Character’s Class*\n\n"
+                    "A character’s class determines their skills, strengths, and the role they play in the party. "
+                    "Will you wield powerful magic as a Wizard, sneak through the shadows as a Thief, or charge into battle as a Barbarian?\n\n"
+                    "Choose your class from the options below. This is the heart of your hero’s abilities!"
+                )
             )
         )
-
     return CLASS
 
-
-
-
-
-async def show_class_desc(update, context):
+async def show_class(update, context):
     query = update.callback_query
     await query.answer()
-
     character_class = query.data.replace('desc_', '')
-
+    context.user_data["character_class"] = character_class
     class_info = class_features.get(character_class, {})
     description = class_info.get("description", "No description available.")
-    image_path = class_info.get("image", None)  # путь к картинке
-
-    keyboard = [[InlineKeyboardButton("Choose this", callback_data=character_class)], [InlineKeyboardButton("Back", callback_data='back_to_class')]]
+    image_path = class_info.get("image", None)
+    keyboard = [
+        [InlineKeyboardButton("Choose this", callback_data=f'character_class_{character_class}')],
+        [InlineKeyboardButton("Back", callback_data='back_to_class')]
+    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
@@ -159,6 +169,7 @@ async def show_class_desc(update, context):
             reply_markup=reply_markup,
             parse_mode="Markdown"
         )
+
 
 
 # characteristics
@@ -383,8 +394,22 @@ async def finish_creation(update, context):
 
 
 async def cancel(update, context):
-    await update.message.reply_text("Creation of character stopped")
     logger.info('Character creation stopped')
+
+    context.user_data.clear()
+
+    keyboard = [[InlineKeyboardButton("Restart", callback_data='start_button')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    with open('media/dnd_cancel.png', 'rb') as photo:
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=photo,
+            caption="*Adventure paused!*\n\nYour character creation has been cancelled. Sometimes even the bravest heroes need a break or a fresh start. When you’re ready to return, simply begin again and craft a new legend for the world of *Dungeons & Dragons*.\n\nFeel free to explore, rest, or gather inspiration. When the call to adventure returns, I’ll be here to guide you every step of the way!\n\nWant to try again? Click the *“Restart”* button to begin anew.",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+    )
+
     return ConversationHandler.END
 
 
@@ -395,13 +420,14 @@ character_creation = ConversationHandler(
     entry_points=[CallbackQueryHandler(character_race, pattern='^start_button$')],
     states={
         RACE: [
-            CallbackQueryHandler(character_class, pattern='^(Hill Dwarf|Mountain Dwarf|High Elf|Wood Elf|Dark Elf (Drow)|Lightfoot Halfling|Stout Halfling|Human|Dragonborn|Forest Gnome|Rock Gnome|Half-Elf|Half-Orc|Tiefling)$'),
-            CallbackQueryHandler(show_race_desc, pattern='^desc_'),
+            CallbackQueryHandler(character_class, pattern='^character_race_(hill_dwarf|mountain_dwarf|high_elf|wood_elf|dark_elf|lightfoot_halfling|stout_halfling|human|dragonborn|forest_gnome|rock_gnome|half-elf|half-orc|tiefling)$'),
+            CallbackQueryHandler(show_race_menu, pattern='^menu_'),
             CallbackQueryHandler(character_race, pattern='^back_to_race$'),
+            CallbackQueryHandler(show_race_more_info, pattern='^show_race_(desc|features)$')
         ],
         CLASS: [
             CallbackQueryHandler(character_characteristics, pattern='^(Barbarian|Cleric|Fighter|Paladin|Sorcerer|Ranger|Bard|Druid|Monk|Rogue|Warlock|Wizard)$'),
-            CallbackQueryHandler(show_class_desc, pattern='^desc_'),
+            CallbackQueryHandler(show_class, pattern='^desc_'),
             CallbackQueryHandler(character_class, pattern='^back_to_class$')
         ],
         CHARACTERISTICS: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_name)],
