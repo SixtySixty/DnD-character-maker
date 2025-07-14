@@ -1,4 +1,4 @@
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
+from telegram.ext import ApplicationBuilder, CommandHandler
 from .handlers import start_command, character_creation
 from config import TOKEN
 from utils.logger import logger
