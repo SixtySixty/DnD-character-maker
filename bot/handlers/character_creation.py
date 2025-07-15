@@ -121,9 +121,6 @@ async def show_race_more_info(update, context):
     )
 
 
-
-
-
 # choosing a class + descriptions
 
 
@@ -269,9 +266,10 @@ async def character_size(update, context):
     character_race = context.user_data.get('character_race')
     race_data = race_info.get(character_race, {})
 
-    character_size_small = race_data.get("size_small", "No asize available.")
-    character_size_medium = race_data.get("size_medium", "No asize available.")
-    character_size_big = race_data.get("size_big", "No asize available.")
+    character_sizes = race_data.get("body_size", "No size available")
+    character_size_small = character_sizes["small"]
+    character_size_medium = character_sizes["medium"]
+    character_size_big = character_sizes["big"]
 
     keyboard = [
         [InlineKeyboardButton('Small', callback_data='character_size_small'), InlineKeyboardButton('Medium', callback_data='character_size_medium'), InlineKeyboardButton('Big', callback_data='character_size_big')]
