@@ -182,8 +182,7 @@ race_info = {
             "Adrie", "Drusilia", "Felosial", "Ielenia", "Lia", "Mialee", "Naivara", "Quelenna", "Thia"
         ],
         "surnames": [
-            "Amakiir (Gemflower)", "Galanodel (Moonwhisper)", "Holimion (Diamonddew)", "Ilphelkiir (Gemblossom)",
-            "Liadon (Silverfrond)", "Meliamne (Oakenheel)", "Nai'lo (Nightbreeze)", "Siannodel (Moonbrook)", "Xiloscient (Goldpetal)"
+            "Amakiir", "Galanodel", "Holimion", "Ilphelkiir", "Liadon", "Meliamne", "Nai'lo", "Siannodel", "Xiloscient"
         ],
         "speed": "30 feet",
         "body_size": {
@@ -422,7 +421,7 @@ race_info = {
             "Immunity to magical sleep",
             "Sunlight Sensitivity"
         ],
-        "image": "media/races/dnd_dark_elf.png"
+        "image": "media/races/dnd_drow.png"
     },
 
     "lightfoot_halfling": {
@@ -588,7 +587,7 @@ race_info = {
         ),
         "features": "some more info",
         "male_names": [
-            "Ander", "Brennen", "Darvin", "Evendur", "Gorstag", "Grim", "Helm", "Malark", "Morn", "Randal"
+            "Ander", "Brennen", "Darvin", "Evendur", "Gorstag", "Grim", "Helm", "Malark", "Morn"
         ],
         "female_names": [
             "Arveene", "Esvele", "Jhessail", "Kerri", "Lureene", "Miri", "Rowan", "Shandri", "Tessele"
@@ -886,7 +885,7 @@ race_info = {
             "Adrie", "Drusilia", "Felosial", "Keyleth", "Naivara", "Shanairra", "Thia", "Valanthe", "Xanaphia"
         ],
         "surnames": [
-            "Amakiir (Gemflower)", "Holimion (Diamonddew)", "Liadon (Silverfrond)", "Nai'lo (Nightbreeze)", "Xiloscient (Goldpetal)"
+            "Amakiir", "Holimion", "Liadon", "Nai'lo", "Xiloscient"
         ],
         "speed": "30 feet",
         "body_size": {

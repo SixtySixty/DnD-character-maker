@@ -4,7 +4,7 @@ from telegram.constants import ParseMode
 from utils.logger import logger
 from .data import class_info, race_info, worldview_info
 
-RACE, CLASS, GENDER, NAME, SIZE, AGE, CHARACTERISTICS, LEVEL, APPEARANCE, WORLDVIEW, BACKSTORY = range(11)
+RACE, CLASS, GENDER, SIZE, AGE, NAME, APPEARANCE, WORLDVIEW, TRAITS, IDEALS, ATTACHMENTS, CHARACTERISTICS, LEVEL, BACKSTORY = range(11)
 
 
 # function that generates the inlineKeyboard
@@ -361,8 +361,36 @@ async def character_name(update, context):
             )
         )
 
-    
     return NAME
+
+
+async def character_surname(update, context):
+
+    if update.callback_query:
+        query = update.callback_query
+        await query.answer()
+        character_name = query.data.replace('character_name_', '')
+        context.user_data['character_name'] = character_name
+    elif update.message:
+        context.user_data['character_name'] = update.mesasge.text
+
+
+    character_race = context.user_data.get("character_race")
+
+    if character_race in ["tiefling", "half_orc"]:
+        return NAME
+
+    character_surnames = race_info[character_race]["surnames"]
+
+    keyboard = build_inline_keyboard(character_surnames, character_surnames, row_width=3, callback_prefix='character_surname_')
+
+    await update.callback_query.edit_message_caption(
+        reply_markup=keyboard,
+        parse_mode="Markdown",
+        caption=f"*Step 7: Select Or Enter Your Character`s Surname.*\n\nThis is your chance to give your character an identity that will echo through legends and tales. Will it be a surname of ancient power, a clever alias, or something entirely unique?\n\nChoose your character’s surname from below. With this, your hero’s story truly begins!",
+    )
+
+
 
 
 # choosing character appearance
@@ -373,8 +401,9 @@ async def character_appearance(update, context):
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        character_name = query.data.replace('character_name_', '')
-        context.user_data['character_name'] = character_name
+        character_surname = query.data.replace('character_surname_', '')
+        character_fullname = context.user_data.get("character_name") + ' ' + character_surname
+        context.user_data['character_name'] = character_fullname
 
         with open('media/stages/dnd_appearance.png', 'rb') as photo:
             await context.bot.edit_message_media(
@@ -384,20 +413,21 @@ async def character_appearance(update, context):
                     media=photo,
                     parse_mode=ParseMode.MARKDOWN,
                     caption=(
-                        "*Step 7: Describe Your Character’s Appearance*\n\nEvery hero stands out in their own way—through striking features, unique style, or the subtle marks of their adventures. Is your character tall and imposing, graceful and mysterious, or perhaps marked by an unusual scar or vibrant eyes?\n\nShare details about your character’s appearance below. This is your chance to paint a vivid picture and make your hero truly memorable!"
+                        "*Step 8: Describe Your Character’s Appearance*\n\nEvery hero stands out in their own way—through striking features, unique style, or the subtle marks of their adventures. Is your character tall and imposing, graceful and mysterious, or perhaps marked by an unusual scar or vibrant eyes?\n\nShare details about your character’s appearance below. This is your chance to paint a vivid picture and make your hero truly memorable!"
                     )
                 )
             )
     elif update.message:
-        character_name = update.message.text.strip()
-        context.user_data['character_name'] = character_name
+        character_surname = update.message.text.strip()
+        character_fullname = context.user_data.get("character_name") + ' ' + character_surname
+        context.user_data['character_name'] = character_fullname
 
         with open('media/stages/dnd_appearance.png', 'rb') as photo:
             await context.bot.send_photo(
                 chat_id=update.message.chat.id,
                 photo=photo,
                 caption=(
-                    "*Step 7: Describe Your Character’s Appearance*\n\nEvery hero stands out in their own way—through striking features, unique style, or the subtle marks of their adventures. Is your character tall and imposing, graceful and mysterious, or perhaps marked by an unusual scar or vibrant eyes?\n\nShare details about your character’s appearance below. This is your chance to paint a vivid picture and make your hero truly memorable!"
+                    "*Step 8: Describe Your Character’s Appearance*\n\nEvery hero stands out in their own way—through striking features, unique style, or the subtle marks of their adventures. Is your character tall and imposing, graceful and mysterious, or perhaps marked by an unusual scar or vibrant eyes?\n\nShare details about your character’s appearance below. This is your chance to paint a vivid picture and make your hero truly memorable!"
                 ),
                 parse_mode=ParseMode.MARKDOWN
             )
@@ -430,7 +460,7 @@ async def character_worldview(update, context):
                     media=photo,
                     parse_mode=ParseMode.MARKDOWN,
                     caption=(
-                        "*Step 8: Select Your Character’s Worldview*\n\nEvery hero sees the world through their own lens—shaped by their beliefs, values, and sense of right and wrong. Is your character guided by honor and justice, or do they follow their own code? Are they a force for good, a champion of order, or a free spirit who values independence above all?\n\nChoose your character’s worldview below. This step helps shape their motivations and the choices they’ll make on their journey!"
+                        "*Step 9: Select Your Character’s Worldview*\n\nEvery hero sees the world through their own lens—shaped by their beliefs, values, and sense of right and wrong. Is your character guided by honor and justice, or do they follow their own code? Are they a force for good, a champion of order, or a free spirit who values independence above all?\n\nChoose your character’s worldview below. This step helps shape their motivations and the choices they’ll make on their journey!"
                     )
                 )
             ) 
@@ -446,7 +476,7 @@ async def character_worldview(update, context):
                 reply_markup=keyboard,
                 photo=photo,
                 caption=(
-                    "*Step 8: Select Your Character’s Worldview*\n\nEvery hero sees the world through their own lens—shaped by their beliefs, values, and sense of right and wrong. Is your character guided by honor and justice, or do they follow their own code? Are they a force for good, a champion of order, or a free spirit who values independence above all?\n\nChoose your character’s worldview below. This step helps shape their motivations and the choices they’ll make on their journey!"
+                    "*Step 9: Select Your Character’s Worldview*\n\nEvery hero sees the world through their own lens—shaped by their beliefs, values, and sense of right and wrong. Is your character guided by honor and justice, or do they follow their own code? Are they a force for good, a champion of order, or a free spirit who values independence above all?\n\nChoose your character’s worldview below. This step helps shape their motivations and the choices they’ll make on their journey!"
                 ),
                 parse_mode=ParseMode.MARKDOWN
             )
@@ -477,15 +507,57 @@ async def show_worldview_menu(update, context):
     )
 
 
+# character traits 
+
+async def character_traits(update, context):
+    logger.info('Traits asked')
 
 
+    return TRAITS
 
+# character ideals
 
+async def character_ideals(update, context):
+    logger.info('Ideals asked')
 
+    return IDEALS
 
+# character attachments
 
+async def character_attachments(update, context):
+    logger.inf('Attachments asked')
 
+    return ATTACHMENTS
 
+# character backstory 
+
+async def character_backstory(update, context):
+    logger.info('Backstory asked')
+
+    query = update.callback_query
+    await query.answer()
+    character_worldview = query.data
+
+    context.user_data['character_worldview'] = character_worldview
+
+    keyboard = [
+        [InlineKeyboardButton('Acolyte', callback_data='Acolyte'), InlineKeyboardButton('Charlatan', callback_data='Charlatan'), InlineKeyboardButton('Criminal', callback_data='Criminal')],
+        [InlineKeyboardButton('Entertainer', callback_data='Entertainer'), InlineKeyboardButton('Folk Hero', callback_data='Folk Hero'), InlineKeyboardButton('Guild Artisan', callback_data='Guild Artisan')],
+        [InlineKeyboardButton('Noble', callback_data='Noble'), InlineKeyboardButton('Outlander', callback_data='Outlander'), InlineKeyboardButton('Sage', callback_data='Sage')],
+        [InlineKeyboardButton('Soldier', callback_data='Soldier'), InlineKeyboardButton('Urchin', callback_data='Urchin')],
+        [InlineKeyboardButton('Worldview Description', callback_data='character_backstory_description')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_backstory.png', 'rb') as photo:
+        await context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=photo,
+            caption="Step 9: Create Your Character’s Backstory\n\nEvery adventurer has a story. What events shaped your hero before they set out on their journey? Were they a noble, a wanderer, a scholar, or something entirely different?\n\nChoose a background from the keyboard or write your own. The richer the backstory, the more alive your character will become!",
+            reply_markup=reply_markup
+    )
+
+    return BACKSTORY
 
 
 # characteristics
@@ -560,38 +632,6 @@ async def character_level(update, context):
         )
 
     return LEVEL
-
-
-
-
-
-async def character_backstory(update, context):
-    logger.info('Backstory asked')
-
-    query = update.callback_query
-    await query.answer()
-    character_worldview = query.data
-
-    context.user_data['character_worldview'] = character_worldview
-
-    keyboard = [
-        [InlineKeyboardButton('Acolyte', callback_data='Acolyte'), InlineKeyboardButton('Charlatan', callback_data='Charlatan'), InlineKeyboardButton('Criminal', callback_data='Criminal')],
-        [InlineKeyboardButton('Entertainer', callback_data='Entertainer'), InlineKeyboardButton('Folk Hero', callback_data='Folk Hero'), InlineKeyboardButton('Guild Artisan', callback_data='Guild Artisan')],
-        [InlineKeyboardButton('Noble', callback_data='Noble'), InlineKeyboardButton('Outlander', callback_data='Outlander'), InlineKeyboardButton('Sage', callback_data='Sage')],
-        [InlineKeyboardButton('Soldier', callback_data='Soldier'), InlineKeyboardButton('Urchin', callback_data='Urchin')],
-        [InlineKeyboardButton('Worldview Description', callback_data='character_backstory_description')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_backstory.png', 'rb') as photo:
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo,
-            caption="Step 9: Create Your Character’s Backstory\n\nEvery adventurer has a story. What events shaped your hero before they set out on their journey? Were they a noble, a wanderer, a scholar, or something entirely different?\n\nChoose a background from the keyboard or write your own. The richer the backstory, the more alive your character will become!",
-            reply_markup=reply_markup
-    )
-
-    return BACKSTORY
 
 
 
@@ -672,8 +712,9 @@ character_creation = ConversationHandler(
             CallbackQueryHandler(character_name, pattern='^character_age_(young|mature|old)$')
         ],
         NAME: [
-            CallbackQueryHandler(character_appearance, pattern=r'character_name'), #handler works when it sees a part of callback
-            MessageHandler(filters.TEXT & ~filters.COMMAND, character_appearance)
+            CallbackQueryHandler(character_surname, pattern=r'character_name'), #handler works when it sees a part of callback
+            MessageHandler(filters.TEXT & ~filters.COMMAND, character_surname),
+            CallbackQueryHandler(character_appearance, pattern=r'character_surname'),
         ],
         APPEARANCE: [
             MessageHandler(filters.TEXT & ~filters.COMMAND, character_worldview)
@@ -683,7 +724,18 @@ character_creation = ConversationHandler(
             CallbackQueryHandler(show_worldview_menu, pattern='^menu_'),
             CallbackQueryHandler(character_worldview, pattern='^back_to_worldview$')
         ],
-        BACKSTORY: [CallbackQueryHandler(finish_creation)],
+        TRAITS: [
+
+        ],
+        IDEALS: [
+
+        ],
+        ATTACHMENTS: [
+
+        ],
+        BACKSTORY: [
+            CallbackQueryHandler(finish_creation)
+        ],
         CHARACTERISTICS: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_name)],
     }, 
     fallbacks=[CommandHandler('cancel', cancel)]
