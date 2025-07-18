@@ -2,9 +2,12 @@ from telegram.ext import ConversationHandler, CommandHandler, MessageHandler, Ca
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.constants import ParseMode
 from utils.logger import logger
-from .data import class_info, race_info, worldview_info
+from .data_race import race_info
+from .data_class import class_info
+from .data_worldview import worldview_info
+from .data_backstory  import backstory_info
 
-RACE, CLASS, GENDER, SIZE, AGE, NAME, APPEARANCE, WORLDVIEW, TRAITS, IDEALS, ATTACHMENTS, CHARACTERISTICS, LEVEL, BACKSTORY = range(11)
+RACE, CLASS, GENDER, SIZE, AGE, NAME, APPEARANCE, WORLDVIEW, TRAITS, IDEALS, ATTACHMENTS, WEAKNESSES, CHARACTERISTICS, LEVEL, BACKSTORY = range(15)
 
 
 # function that generates the inlineKeyboard
@@ -493,7 +496,7 @@ async def show_worldview_menu(update, context):
 
     worldview_data = worldview_info.get(character_worldview, {})
     worldview_title = worldview_data.get("title", "No title avaliable")
-    worldviwe_description = worldview_data.get("description", "No description avaliable")
+    worldview_description = worldview_data.get("description", "No description avaliable")
 
     keyboard = [
         [InlineKeyboardButton("Choose this", callback_data=f'character_worldview_{character_worldview}')], 
@@ -501,10 +504,79 @@ async def show_worldview_menu(update, context):
     ]
 
     await update.callback_query.edit_message_caption(
-            caption=f"*{worldview_title}*\n\n{worldviwe_description}",
+            caption=f"*{worldview_title}*\n\n{worldview_description}",
             reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
     )
+
+
+# character backstory 
+
+async def character_backstory(update, context):
+    logger.info('Backstory asked')
+
+    query = update.callback_query
+    await query.answer()
+
+    character_backstories = list(backstory_info.keys())
+    character_backstories_titles = [backstory_info[character_backstory]["title"] for character_backstory in character_backstories if character_backstory in backstory_info]
+
+    keyboard = build_inline_keyboard(character_backstories_titles, character_backstories, row_width=3, callback_prefix='menu_')
+
+    with open('media/stages/dnd_backstory.png', 'rb') as photo:
+        await context.bot.edit_message_media(
+            chat_id=query.message.chat.id,
+            message_id=query.message.message_id,
+            reply_markup=keyboard,
+            media=InputMediaPhoto(
+                media=photo,
+                parse_mode=ParseMode.MARKDOWN,
+                caption=(
+                    "*Step 10: Choose Your Character’s Backstory*\n\nEvery hero has a tale that shaped who they are—full of challenges, triumphs, and defining moments. What key events set your character on their path? Did they grow up among royalty or in humble beginnings? Were they marked by a great loss, a personal quest, or an unexpected adventure?\n\nShare your character’s backstory below. This is your chance to weave history, purpose, and personality into your hero, making them truly unique for the journeys ahead!"
+                )
+            )
+        ) 
+
+    return BACKSTORY
+
+
+async def show_backstory_menu(update, context):
+    query = update.callback_query
+    await query.answer()
+
+    character_backstory = query.data.replace('menu_', '')
+    context.user_data["character_backstory"] = character_backstory
+
+    backstory_data = backstory_info.get(character_backstory, {})
+    backstory_title = backstory_data.get("title", "No title avaliable")
+    backstory_description = backstory_data.get("description", "No description avaliable")
+    image_path = backstory_data.get("image", None)
+
+    keyboard = [
+        [InlineKeyboardButton("Choose this", callback_data=f'character_backstory_{character_backstory}')], 
+        [InlineKeyboardButton("Back", callback_data='back_to_backstory')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    if image_path:
+        with open(image_path, "rb") as photo:
+            await context.bot.edit_message_media(
+                chat_id=update.effective_chat.id,
+                message_id=query.message.message_id,
+                reply_markup=reply_markup,
+                media=InputMediaPhoto(
+                    media=photo,
+                    caption=f"*{backstory_title}*\n\n{backstory_description}",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
+        await query.edit_message_caption(
+            caption=f"*{character_class}*\n\n{backstory_description}",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+
 
 
 # character traits 
@@ -528,36 +600,6 @@ async def character_attachments(update, context):
     logger.inf('Attachments asked')
 
     return ATTACHMENTS
-
-# character backstory 
-
-async def character_backstory(update, context):
-    logger.info('Backstory asked')
-
-    query = update.callback_query
-    await query.answer()
-    character_worldview = query.data
-
-    context.user_data['character_worldview'] = character_worldview
-
-    keyboard = [
-        [InlineKeyboardButton('Acolyte', callback_data='Acolyte'), InlineKeyboardButton('Charlatan', callback_data='Charlatan'), InlineKeyboardButton('Criminal', callback_data='Criminal')],
-        [InlineKeyboardButton('Entertainer', callback_data='Entertainer'), InlineKeyboardButton('Folk Hero', callback_data='Folk Hero'), InlineKeyboardButton('Guild Artisan', callback_data='Guild Artisan')],
-        [InlineKeyboardButton('Noble', callback_data='Noble'), InlineKeyboardButton('Outlander', callback_data='Outlander'), InlineKeyboardButton('Sage', callback_data='Sage')],
-        [InlineKeyboardButton('Soldier', callback_data='Soldier'), InlineKeyboardButton('Urchin', callback_data='Urchin')],
-        [InlineKeyboardButton('Worldview Description', callback_data='character_backstory_description')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_backstory.png', 'rb') as photo:
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo,
-            caption="Step 9: Create Your Character’s Backstory\n\nEvery adventurer has a story. What events shaped your hero before they set out on their journey? Were they a noble, a wanderer, a scholar, or something entirely different?\n\nChoose a background from the keyboard or write your own. The richer the backstory, the more alive your character will become!",
-            reply_markup=reply_markup
-    )
-
-    return BACKSTORY
 
 
 # characteristics
@@ -724,6 +766,11 @@ character_creation = ConversationHandler(
             CallbackQueryHandler(show_worldview_menu, pattern='^menu_'),
             CallbackQueryHandler(character_worldview, pattern='^back_to_worldview$')
         ],
+        BACKSTORY: [
+            CallbackQueryHandler(character_traits, pattern=r'character_backstory_'),
+            CallbackQueryHandler(show_backstory_menu, pattern='^menu_'),
+            CallbackQueryHandler(character_backstory, pattern='^back_to_backstory$')
+        ],
         TRAITS: [
 
         ],
@@ -733,8 +780,8 @@ character_creation = ConversationHandler(
         ATTACHMENTS: [
 
         ],
-        BACKSTORY: [
-            CallbackQueryHandler(finish_creation)
+        WEAKNESSES: [
+
         ],
         CHARACTERISTICS: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_name)],
     }, 
