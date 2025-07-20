@@ -368,30 +368,55 @@ async def character_name(update, context):
 
 
 async def character_surname(update, context):
+    # Получаем race из user_data
+    character_race = context.user_data.get("character_race")
 
+    if character_race in ["tiefling", "half_orc"]:
+        if update.callback_query:
+            query = update.callback_query
+            await query.answer()
+            character_name = query.data.replace('character_name_', '')
+            context.user_data['character_name'] = character_name
+        elif update.message:
+            context.user_data['character_name'] = update.message.text.strip()
+        return await character_appearance(update, context)
+    
     if update.callback_query:
         query = update.callback_query
         await query.answer()
         character_name = query.data.replace('character_name_', '')
         context.user_data['character_name'] = character_name
     elif update.message:
-        context.user_data['character_name'] = update.mesasge.text
-
-
-    character_race = context.user_data.get("character_race")
-
-    if character_race in ["tiefling", "half_orc"]:
-        return NAME
-
+        context.user_data['character_name'] = update.message.text.strip()
+    
     character_surnames = race_info[character_race]["surnames"]
-
     keyboard = build_inline_keyboard(character_surnames, character_surnames, row_width=3, callback_prefix='character_surname_')
-
-    await update.callback_query.edit_message_caption(
-        reply_markup=keyboard,
-        parse_mode="Markdown",
-        caption=f"*Step 7: Select Or Enter Your Character`s Surname.*\n\nThis is your chance to give your character an identity that will echo through legends and tales. Will it be a surname of ancient power, a clever alias, or something entirely unique?\n\nChoose your character’s surname from below. With this, your hero’s story truly begins!",
+    
+    if update.callback_query:
+        query = update.callback_query
+        await query.answer()
+        # ... ваша логика ...
+        await query.edit_message_caption(  # именно у объекта query!
+            reply_markup=keyboard,
+            parse_mode="Markdown",
+            caption=(
+                "*Step 7: Select Or Enter Your Character's Surname.*\n\n"
+                "This is your chance to give your character an identity that will echo through legends and tales. "
+                "Will it be a surname of ancient power, a clever alias, or something entirely unique?\n\n"
+                "Choose your character’s surname from below. With this, your hero’s story truly begins!"
+            )
     )
+    elif update.message:
+        with open('media/stages/dnd_name.png', 'rb') as photo:
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=photo,
+                caption="*Step 7: Select Or Enter Your Character's Surname.*\n\nChoose your character’s surname from below.",
+                reply_markup=keyboard,
+                parse_mode="Markdown"
+            )
+
+    return NAME
 
 
 
@@ -584,98 +609,284 @@ async def show_backstory_menu(update, context):
 async def character_traits(update, context):
     logger.info('Traits asked')
 
+    query = update.callback_query
+    await query.answer()
+
+    character_backstory = context.user_data.get("character_backstory")
+    character_trait_names = [trait["name"] for trait in backstory_info[character_backstory ]["personality_traits"]]
+
+    keyboard = build_inline_keyboard(character_trait_names, character_trait_names, row_width=3, callback_prefix='menu_')
+
+    with open('media/stages/dnd_traits.png', 'rb') as photo:
+        await context.bot.edit_message_media(
+            chat_id=query.message.chat.id,
+            message_id=query.message.message_id,
+            reply_markup=keyboard,
+            media=InputMediaPhoto(
+                media=photo,
+                parse_mode=ParseMode.MARKDOWN,
+                caption=(
+                    f"*Step 11: Select Your Character’s Traits*\n\nTraits give your hero personality and individuality, reflecting habits, quirks, or ideals that set them apart from others. Is your character brave or cautious, honest or cunning, cheerful or reserved? These small details can influence choices, friendships, and how your hero responds to the world.\n\nChoose or describe your character’s key traits below. This final touch adds depth and brings your hero’s story to life!"
+                )
+            )
+        ) 
 
     return TRAITS
+
+async def show_trait_menu(update, context):
+    query = update.callback_query
+    await query.answer()
+
+
+    character_backstory = context.user_data.get("character_backstory")
+    backstory_data = backstory_info.get(character_backstory, {})
+    character_trait = query.data.replace('menu_', '')
+    image_path = backstory_data.get("image", None)
+    
+    character_trait_description = next(
+        trait["description"] for trait in backstory_info[character_backstory]["personality_traits"]
+        if trait["name"] == character_trait
+    )
+
+    keyboard = [
+        [InlineKeyboardButton("Choose this", callback_data=f'character_traits_{character_trait}')],
+        [InlineKeyboardButton("back", callback_data='back_to_traits')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    if image_path:
+        with open(image_path, "rb") as photo:
+            await context.bot.edit_message_media(
+                chat_id=update.effective_chat.id,
+                message_id=query.message.message_id,
+                reply_markup=reply_markup,
+                media=InputMediaPhoto(
+                    media=photo,
+                    caption=f"*{character_trait}*\n\n{character_trait_description}",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
+        await query.edit_message_caption(
+            caption=f"*{character_trait}*\n\n{character_trait_description}",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
 
 # character ideals
 
 async def character_ideals(update, context):
     logger.info('Ideals asked')
 
+    query = update.callback_query
+    await query.answer()
+
+    character_backstory = context.user_data.get("character_backstory")
+    character_ideals_names = [ideal["name"] for ideal in backstory_info[character_backstory ]["ideals"]]
+
+    keyboard = build_inline_keyboard(character_ideals_names, character_ideals_names, row_width=3, callback_prefix='menu_')
+
+    with open('media/stages/dnd_ideals.png', 'rb') as photo:
+        await context.bot.edit_message_media(
+            chat_id=query.message.chat.id,
+            message_id=query.message.message_id,
+            reply_markup=keyboard,
+            media=InputMediaPhoto(
+                media=photo,
+                parse_mode=ParseMode.MARKDOWN,
+                caption=(
+                    f"*Step 12: Define Your Character’s Ideals*\n\nIdeals are the beliefs and guiding principles that shape your hero’s actions and decisions. Is your character driven by the pursuit of justice, loyalty to friends, a thirst for freedom, or the quest for knowledge? Their ideals reveal what truly matters most to them on their journey.\n\nDescribe your character’s core ideals below. These values will inspire your hero and guide them through every adventure!"
+                )
+            )
+        ) 
+
     return IDEALS
+
+async def show_ideal_menu(update, context):
+    query = update.callback_query
+    await query.answer()
+
+    character_backstory = context.user_data.get("character_backstory")
+    backstory_data = backstory_info.get(character_backstory, {})
+    character_ideal = query.data.replace('menu_', '')
+    image_path = backstory_data.get("image", None)
+    
+    character_ideal_description = next(
+        ideal["description"] for ideal in backstory_info[character_backstory]["ideals"]
+        if ideal["name"] == character_ideal
+    )
+
+    keyboard = [
+        [InlineKeyboardButton("Choose this", callback_data=f'character_ideals_{character_ideal}')],
+        [InlineKeyboardButton("back", callback_data='back_to_ideals')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    if image_path:
+        with open(image_path, "rb") as photo:
+            await context.bot.edit_message_media(
+                chat_id=update.effective_chat.id,
+                message_id=query.message.message_id,
+                reply_markup=reply_markup,
+                media=InputMediaPhoto(
+                    media=photo,
+                    caption=f"*{character_ideal}*\n\n{character_ideal_description}",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
+        await query.edit_message_caption(
+            caption=f"*{character_ideal}*\n\n{character_ideal_description}",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+
+
+
+
 
 # character attachments
 
 async def character_attachments(update, context):
-    logger.inf('Attachments asked')
+    logger.info('Attachments asked')
+
+    query = update.callback_query
+    await query.answer()
+
+    character_backstory = context.user_data.get("character_backstory")
+    character_attachments_names = [attachment["name"] for attachment in backstory_info[character_backstory]["attachments"]]
+
+    keyboard = build_inline_keyboard(character_attachments_names, character_attachments_names, row_width=3, callback_prefix='menu_')
+
+    with open('media/stages/dnd_attachments.png', 'rb') as photo:
+        await context.bot.edit_message_media(
+            chat_id=query.message.chat.id,
+            message_id=query.message.message_id,
+            reply_markup=keyboard,
+            media=InputMediaPhoto(
+                media=photo,
+                parse_mode=ParseMode.MARKDOWN,
+                caption=(
+                    f"*Step 12: Define Your Character’s Ideals*\n\nIdeals are the beliefs and guiding principles that shape your hero’s actions and decisions. Is your character driven by the pursuit of justice, loyalty to friends, a thirst for freedom, or the quest for knowledge? Their ideals reveal what truly matters most to them on their journey.\n\nDescribe your character’s core ideals below. These values will inspire your hero and guide them through every adventure!"
+                )
+            )
+        ) 
 
     return ATTACHMENTS
 
-
-# characteristics
-
-
-async def character_characteristics(update, context):
-    logger.info('Characteristics asked')
-
+async def show_attachment_menu(update, context):
     query = update.callback_query
     await query.answer()
-    character_class = query.data
 
-    character_race = context.user_data.get("character_race")
-    character_class = context.user_data.get("character_class")
-
-    keyboard = [
-        [InlineKeyboardButton('Characteristics Description', callback_data='character_characteristics_description')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    context.user_data['character_class'] = character_class
-
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_characteristics.png', 'rb') as photo:
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo,
-            caption=f"Step 3: Define Your Character’s Characteristics\n\nEvery hero has unique traits that set them apart. Think about your character’s strengths, weaknesses, and special talents. Are they incredibly strong, remarkably clever, or perhaps exceptionally charming?\n\nDescribe the main characteristics of your character. This will shape how they interact with the world!\n\n{character_race}, {character_class}",
-            reply_markup=reply_markup
+    character_backstory = context.user_data.get("character_backstory")
+    backstory_data = backstory_info.get(character_backstory, {})
+    character_attachment = query.data.replace('menu_', '')
+    image_path = backstory_data.get("image", None)
+    
+    character_attachment_description = next(
+        attachment["description"] for attachment in backstory_info[character_backstory]["attachments"]
+        if attachment["name"] == character_attachment
     )
 
-    return CHARACTERISTICS
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async def character_level(update, context):
-
-    query = update.callback_query
-    await query.answer()
-    character_class = query.data
-
-    context.user_data['character_class'] = character_class
-
     keyboard = [
-        [InlineKeyboardButton('level 1', callback_data='character_level_1'), InlineKeyboardButton('level 2', callback_data='character_level_2'), InlineKeyboardButton('level 3', callback_data='character_level_3')],
-        [InlineKeyboardButton('level 4', callback_data='character_level_4'), InlineKeyboardButton('level 5', callback_data='character_level_5'), InlineKeyboardButton('level 6', callback_data='character_level_6')],
-        [InlineKeyboardButton('level 7', callback_data='character_level_7'), InlineKeyboardButton('level 8', callback_data='character_level_8'), InlineKeyboardButton('level 9', callback_data='character_level_9')],
-        [InlineKeyboardButton('level 10', callback_data='character_level_10'), InlineKeyboardButton('level 11', callback_data='character_level_11'), InlineKeyboardButton('level 12', callback_data='character_level_12')],
-        [InlineKeyboardButton('level 13', callback_data='character_level_13'), InlineKeyboardButton('level 14', callback_data='character_level_14'), InlineKeyboardButton('level 15', callback_data='character_level_15')],
-        [InlineKeyboardButton('level 16', callback_data='character_level_16'), InlineKeyboardButton('level 17', callback_data='character_level_17'), InlineKeyboardButton('level 18', callback_data='character_level_18')],
-        [InlineKeyboardButton('level 19', callback_data='character_level_19'), InlineKeyboardButton('level 20', callback_data='character_level_20')]
+        [InlineKeyboardButton("Choose this", callback_data=f'character_attachments_{character_attachment}')],
+        [InlineKeyboardButton("back", callback_data='back_to_attachments')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_level.png', 'rb') as photo:
-        await context.bot.send_photo(
-            chat_id=update.effective_chat.id,
-            photo=photo,
-            caption='',
-            reply_markup=reply_markup
+    if image_path:
+        with open(image_path, "rb") as photo:
+            await context.bot.edit_message_media(
+                chat_id=update.effective_chat.id,
+                message_id=query.message.message_id,
+                reply_markup=reply_markup,
+                media=InputMediaPhoto(
+                    media=photo,
+                    caption=f"*{character_attachment}*\n\n{character_attachment_description}",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
+        await query.edit_message_caption(
+            caption=f"*{character_attachment}*\n\n{character_attachment_description}",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
         )
 
-    return LEVEL
 
 
+
+
+
+# character weraknesses
+
+async def character_weaknesses(update, context):
+    logger.info('Weaknesses asked')
+
+    query = update.callback_query
+    await query.answer()
+
+    character_backstory = context.user_data.get("character_backstory")
+    character_weaknesses_names = [weakness["name"] for weakness in backstory_info[character_backstory ]["weaknesses"]]
+
+    keyboard = build_inline_keyboard(character_weaknesses_names, character_weaknesses_names, row_width=3, callback_prefix='menu_')
+
+    with open('media/stages/dnd_weaknesses.png', 'rb') as photo:
+        await context.bot.edit_message_media(
+            chat_id=query.message.chat.id,
+            message_id=query.message.message_id,
+            reply_markup=keyboard,
+            media=InputMediaPhoto(
+                media=photo,
+                parse_mode=ParseMode.MARKDOWN,
+                caption=(
+                    f"*Step 12: Define Your Character’s Ideals*\n\nIdeals are the beliefs and guiding principles that shape your hero’s actions and decisions. Is your character driven by the pursuit of justice, loyalty to friends, a thirst for freedom, or the quest for knowledge? Their ideals reveal what truly matters most to them on their journey.\n\nDescribe your character’s core ideals below. These values will inspire your hero and guide them through every adventure!"
+                )
+            )
+        ) 
+
+    return WEAKNESSES
+
+
+
+async def show_weakness_menu(update, context):
+    query = update.callback_query
+    await query.answer()
+
+    character_backstory = context.user_data.get("character_backstory")
+    backstory_data = backstory_info.get(character_backstory, {})
+    character_weakness = query.data.replace('menu_', '')
+    image_path = backstory_data.get("image", None)
+    
+    character_weakness_description = next(
+        weakness["description"] for weakness in backstory_info[character_backstory]["weaknesses"]
+        if weakness["name"] == character_weakness
+    )
+
+    keyboard = [
+        [InlineKeyboardButton("Choose this", callback_data=f'character_weaknesses_{character_weakness}')],
+        [InlineKeyboardButton("back", callback_data='back_to_weaknesses')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    if image_path:
+        with open(image_path, "rb") as photo:
+            await context.bot.edit_message_media(
+                chat_id=update.effective_chat.id,
+                message_id=query.message.message_id,
+                reply_markup=reply_markup,
+                media=InputMediaPhoto(
+                    media=photo,
+                    caption=f"*{character_weakness}*\n\n{character_weakness_description}",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
+        await query.edit_message_caption(
+            caption=f"*{character_weakness}*\n\n{character_weakness_description}",
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
 
 
 
@@ -693,13 +904,12 @@ async def finish_creation(update, context):
     character_name = context.user_data['character_name']
     character_class = context.user_data['character_class']
     character_race = context.user_data['character_race']
-    character_characteristics = context.user_data['character_characteristics']
     character_age = context.user_data['character_age']
     character_backstory = context.user_data['character_backstory']
     character_appearance = context.user_data['character_appearance']
     character_worldview = context.user_data['character_worldview']
 
-    await update.effective_message.reply_text(f"Your new character for your lovely boardgame!\n\nName: {character_name}\nClass: {character_class}\nRace: {character_race}\nCharacteristics: {character_characteristics}\nAge: {character_age}\nAppearance: {character_appearance}\nBackstory: {character_backstory}\nWorldview: {character_worldview}")
+    await update.effective_message.reply_text(f"Your new character for your lovely boardgame!\n\nName: {character_name}\nClass: {character_class}\nRace: {character_race}\nAge: {character_age}\nAppearance: {character_appearance}\nBackstory: {character_backstory}\nWorldview: {character_worldview}")
     logger.info('Character created')
     return ConversationHandler.END
 
@@ -754,9 +964,9 @@ character_creation = ConversationHandler(
             CallbackQueryHandler(character_name, pattern='^character_age_(young|mature|old)$')
         ],
         NAME: [
-            CallbackQueryHandler(character_surname, pattern=r'character_name'), #handler works when it sees a part of callback
+            CallbackQueryHandler(character_surname, pattern=r'character_name_'), #handler works when it sees a part of callback
             MessageHandler(filters.TEXT & ~filters.COMMAND, character_surname),
-            CallbackQueryHandler(character_appearance, pattern=r'character_surname'),
+            CallbackQueryHandler(character_appearance, pattern=r'character_surname_'),
         ],
         APPEARANCE: [
             MessageHandler(filters.TEXT & ~filters.COMMAND, character_worldview)
@@ -772,18 +982,55 @@ character_creation = ConversationHandler(
             CallbackQueryHandler(character_backstory, pattern='^back_to_backstory$')
         ],
         TRAITS: [
-
+            CallbackQueryHandler(character_ideals, pattern=r'character_traits_'),
+            CallbackQueryHandler(show_trait_menu, pattern='^menu_'),
+            CallbackQueryHandler(character_traits, pattern='^back_to_traits$')
         ],
         IDEALS: [
-
+            CallbackQueryHandler(character_attachments, pattern=r'character_ideals_'),
+            CallbackQueryHandler(show_ideal_menu, pattern='^menu_'),
+            CallbackQueryHandler(character_ideals, pattern='^back_to_ideals$')
         ],
         ATTACHMENTS: [
-
+            CallbackQueryHandler(character_weaknesses, pattern=r'character_attachments_'),
+            CallbackQueryHandler(show_attachment_menu, pattern='^menu_'),
+            CallbackQueryHandler(character_attachments, pattern='^back_to_attachments$')
         ],
         WEAKNESSES: [
-
-        ],
-        CHARACTERISTICS: [MessageHandler(filters.TEXT & ~filters.COMMAND, character_name)],
+            CallbackQueryHandler(finish_creation, pattern=r'character_weaknesses_'),
+            CallbackQueryHandler(show_weakness_menu, pattern='^menu_'),
+            CallbackQueryHandler(character_weaknesses, pattern='^back_to_weaknesses$')
+        ]
     }, 
     fallbacks=[CommandHandler('cancel', cancel)]
 )
+
+
+# async def character_level(update, context):
+
+#     query = update.callback_query
+#     await query.answer()
+#     character_class = query.data
+
+#     context.user_data['character_class'] = character_class
+
+#     keyboard = [
+#         [InlineKeyboardButton('level 1', callback_data='character_level_1'), InlineKeyboardButton('level 2', callback_data='character_level_2'), InlineKeyboardButton('level 3', callback_data='character_level_3')],
+#         [InlineKeyboardButton('level 4', callback_data='character_level_4'), InlineKeyboardButton('level 5', callback_data='character_level_5'), InlineKeyboardButton('level 6', callback_data='character_level_6')],
+#         [InlineKeyboardButton('level 7', callback_data='character_level_7'), InlineKeyboardButton('level 8', callback_data='character_level_8'), InlineKeyboardButton('level 9', callback_data='character_level_9')],
+#         [InlineKeyboardButton('level 10', callback_data='character_level_10'), InlineKeyboardButton('level 11', callback_data='character_level_11'), InlineKeyboardButton('level 12', callback_data='character_level_12')],
+#         [InlineKeyboardButton('level 13', callback_data='character_level_13'), InlineKeyboardButton('level 14', callback_data='character_level_14'), InlineKeyboardButton('level 15', callback_data='character_level_15')],
+#         [InlineKeyboardButton('level 16', callback_data='character_level_16'), InlineKeyboardButton('level 17', callback_data='character_level_17'), InlineKeyboardButton('level 18', callback_data='character_level_18')],
+#         [InlineKeyboardButton('level 19', callback_data='character_level_19'), InlineKeyboardButton('level 20', callback_data='character_level_20')]
+#     ]
+#     reply_markup = InlineKeyboardMarkup(keyboard)
+
+#     with open('C:\Programming\PetProjects\DnD-character-maker\media\dnd_level.png', 'rb') as photo:
+#         await context.bot.send_photo(
+#             chat_id=update.effective_chat.id,
+#             photo=photo,
+#             caption='',
+#             reply_markup=reply_markup
+#         )
+
+#     return LEVEL
