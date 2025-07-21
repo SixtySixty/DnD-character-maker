@@ -7,21 +7,24 @@ from .data_class import class_info
 from .data_worldview import worldview_info
 from .data_backstory  import backstory_info
 
-RACE, CLASS, GENDER, SIZE, AGE, NAME, APPEARANCE, WORLDVIEW, TRAITS, IDEALS, ATTACHMENTS, WEAKNESSES, CHARACTERISTICS, LEVEL, BACKSTORY = range(15)
+RACE, CLASS, GENDER, SIZE, AGE, NAME, SURNAME, APPEARANCE, WORLDVIEW, TRAITS, IDEALS, ATTACHMENTS, WEAKNESSES, CHARACTERISTICS, LEVEL, BACKSTORY = range(16)
 
 
 # function that generates the inlineKeyboard
 
-def build_inline_keyboard(items, callback_values, row_width=2, callback_prefix=''):
+def build_inline_keyboard(items, values, row_width=2, callback_prefix=''):
     keyboard = []
     for i in range(0, len(items), row_width):
         row_items = items[i:i+row_width]
-        row_callbacks = callback_values[i:i+row_width]
+        row_values = values[i:i+row_width]
         row = [
-            InlineKeyboardButton(text=text, callback_data=f'{callback_prefix}{cb}') for text, cb in zip(row_items, row_callbacks)
+            InlineKeyboardButton(
+                text=text,
+                callback_data=f'{callback_prefix}{value}'
+            ) for text, value in zip(row_items, row_values)
         ]
         keyboard.append(row)
-    return InlineKeyboardMarkup(keyboard)
+    return keyboard
 
 
 
@@ -31,16 +34,19 @@ def build_inline_keyboard(items, callback_values, row_width=2, callback_prefix='
 async def character_race(update, context):
     logger.info('Race asked')
 
-    character_races = list(race_info.keys())
-    character_race_titles = [race_info[character_race]["title"] for character_race in character_races if character_race in race_info] 
+    # getting data to create buttons in inline keyboard
+    races = list(race_info.keys())
+    races_titles = [race_info[race]["title"] for race in races if race in race_info] 
 
-    keyboard = build_inline_keyboard(character_race_titles, character_races, row_width=3, callback_prefix='menu_')
+    # creating inlinekeyboard
+    keyboard = build_inline_keyboard(races_titles, races, row_width=3, callback_prefix='race_menu_')
 
+    # creating the message to user
     with open('media/stages/dnd_race.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=update.effective_chat.id,
             message_id=update.callback_query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
@@ -62,21 +68,30 @@ async def show_race_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_race = query.data.replace('menu_', '')
-    context.user_data["character_race"] = character_race
+    # editing and saving data
+    if query.data.startswith("race_menu_back"):
+        character_race = context.user_data.get('race')
+    elif query.data.startswith("race_menu_"):
+        character_race = query.data.replace("race_menu_", "")
+        context.user_data['race'] = character_race
 
+    logger.info(f'{character_race}')
+
+    # getting data to show race info
     race_data = race_info.get(character_race, {})
     race_title = race_data.get("title", "No title available.")
     race_description = race_data.get("description", "No description available.")
     image_path = race_data.get("image", None)
 
+    # creating inlinekeyboard
     keyboard = [
-        [InlineKeyboardButton("More info", callback_data='show_race_info'),
-         InlineKeyboardButton("Features", callback_data='show_race_features')],
-        [InlineKeyboardButton("Choose this", callback_data=f'character_race_{character_race}')],
-        [InlineKeyboardButton("Back", callback_data='back_to_race')]
+        [InlineKeyboardButton("More info", callback_data=f'race_info'),
+         InlineKeyboardButton("Features", callback_data=f'race_features')],
+        [InlineKeyboardButton("Choose", callback_data=f'race_select')],
+        [InlineKeyboardButton("Back", callback_data='race_back')]
     ]
 
+    # creating the message to user
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
@@ -96,32 +111,38 @@ async def show_race_menu(update, context):
             parse_mode="Markdown"
         )
 
+    return RACE
+
 
 
 async def show_race_more_info(update, context):
     query = update.callback_query
-    await query.answer()
+    await query.answer()    
 
-    character_race = context.user_data.get("character_race")
-    race_data = race_info.get(character_race, {})
+    character_race = context.user_data.get('race')
 
-    if query.data == "show_race_info":
+    if query.data.startswith("race_info"):
         title = "More info"
-        text = race_data.get("detailed_description", "No description available.")
-    elif query.data == "show_race_features":
+        text = race_info[character_race].get("detailed_description", "No description available.")
+    elif query.data.startswith("race_features"):
         title = "Features"
-        text = race_data.get("features", "No features available.")
+        text = race_info[character_race].get("features", "No features available.")
     else:
+        character_race = None
         title = "Info"
         text = "No info available."
 
-    keyboard = [[InlineKeyboardButton('Back', callback_data=f'menu_{character_race}')]]
+    race_title = race_info.get(character_race, {}).get('title', character_race)
+
+    keyboard = [[InlineKeyboardButton('Back', callback_data=f'race_menu_back')]]
 
     await query.edit_message_caption(
-        caption=f"*{race_data.get('title', character_race)} — {title}*\n\n{text}",
+        caption=f"*{race_title} — {title}*\n\n{text}",
         reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown"
     )
+
+    return RACE
 
 
 # choosing a class + descriptions
@@ -136,13 +157,13 @@ async def character_class(update, context):
     character_classes = list(class_info.keys())
     character_classes_titles = [class_info[character_class]["title"] for character_class in character_classes if character_class in class_info]
 
-    keyboard = build_inline_keyboard(character_classes_titles, character_classes, row_width=3, callback_prefix='menu_')
+    keyboard = build_inline_keyboard(character_classes_titles, character_classes, row_width=3, callback_prefix='class_menu_')
 
     with open('media/stages/dnd_class.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=update.effective_chat.id,
             message_id=update.callback_query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
@@ -162,8 +183,13 @@ async def show_class_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_class = query.data.replace('menu_', '')
-    context.user_data["character_class"] = character_class
+    if query.data.startswith("class_menu_back"):
+        character_class = context.user_data.get('class')
+    elif query.data.startswith("class_menu"):
+        character_class = query.data.replace("class_menu_", "")
+        context.user_data['class'] = character_class
+
+    logger.info(f'{character_class}')
 
     class_data = class_info.get(character_class, {})
     class_title = class_data.get("title", "No title available.")
@@ -171,18 +197,18 @@ async def show_class_menu(update, context):
     image_path = class_data.get("image", None)
     
     keyboard = [
-        [InlineKeyboardButton("More info", callback_data='show_class_info'),
-         InlineKeyboardButton("Features", callback_data='show_class_features')],
-        [InlineKeyboardButton("Choose this", callback_data=f'character_class_{character_class}')],
-        [InlineKeyboardButton("Back", callback_data='back_to_class')]
+        [InlineKeyboardButton("More info", callback_data=f'class_info'),
+         InlineKeyboardButton("Features", callback_data=f'class_features')],
+        [InlineKeyboardButton("Choose this", callback_data=f'class_select')],
+        [InlineKeyboardButton("Back", callback_data='class_back')]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
-                reply_markup=reply_markup,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 media=InputMediaPhoto(
                     media=photo,
                     caption=f"*{class_title}*\n\n{class_description}",
@@ -192,35 +218,41 @@ async def show_class_menu(update, context):
     else:
         await query.edit_message_caption(
             caption=f"*{character_class}*\n\n{class_description}",
-            reply_markup=reply_markup,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
         )
+    
+    return CLASS
         
 
 async def show_class_more_info(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_class = context.user_data.get("character_class")
-    class_data = class_info.get(character_class, {})
+    character_class = context.user_data.get('class')
 
-    if query.data == "show_class_info":
+    if query.data.startswith("class_info"):
         title = "More info"
-        text = class_data.get("detailed_description", "No description available.")
-    elif query.data == "show_class_features":
+        text = class_info[character_class].get("detailed_description", "No description available.")
+    elif query.data.startswith("class_features"):
         title = "Features"
-        text = class_data.get("features", "No features available.")
+        text = class_info[character_class].get("features", "No features available.")
     else:
+        character_class = None
         title = "Info"
         text = "No info available."
 
-    keyboard = [[InlineKeyboardButton('Back', callback_data=f'menu_{character_class}')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    class_title = class_info.get(character_race, {}.get('title', character_class))
+
+    keyboard = [[InlineKeyboardButton('Back', callback_data='class_menu_back')]]
+
     await query.edit_message_caption(
-        caption=f"*{class_data.get('title', character_class)} — {title}*\n\n{text}",
-        reply_markup=reply_markup,
+        caption=f"*{class_title} — {title}*\n\n{text}",
+        reply_markup=InlineKeyboardMarkup(keyboard),
         parse_mode="Markdown"
     )
+
+    return CLASS
 
 
 
@@ -234,7 +266,7 @@ async def character_gender(update, context):
     query = update.callback_query
     await query.answer()
 
-    keyboard = [[InlineKeyboardButton('Female', callback_data='character_female'), InlineKeyboardButton('Male', callback_data='character_male')]]
+    keyboard = [[InlineKeyboardButton('Female', callback_data='gender_select_female'), InlineKeyboardButton('Male', callback_data='gender_select_male')]]
     
 
     with open('media/stages/dnd_gender.png', 'rb') as photo:
@@ -264,9 +296,11 @@ async def character_size(update, context):
     query = update.callback_query
     await query.answer()
 
-    context.user_data['character_gender'] = query.data.replace('character_', '')
+    # creating and saving character`s gender
+    character_gender = query.data.replace('gender_select_', '')
+    context.user_data['gender'] = character_gender
 
-    character_race = context.user_data.get('character_race')
+    character_race = context.user_data.get('race')
     race_data = race_info.get(character_race, {})
 
     character_sizes = race_data.get("body_size", "No size available")
@@ -275,7 +309,7 @@ async def character_size(update, context):
     character_size_big = character_sizes["big"]
 
     keyboard = [
-        [InlineKeyboardButton('Small', callback_data='character_size_small'), InlineKeyboardButton('Medium', callback_data='character_size_medium'), InlineKeyboardButton('Big', callback_data='character_size_big')]
+        [InlineKeyboardButton('Small', callback_data='size_select_small'), InlineKeyboardButton('Medium', callback_data='size_select_medium'), InlineKeyboardButton('Big', callback_data='size_select_big')]
     ]
 
     with open('media/stages/dnd_size.png', 'rb') as photo:
@@ -301,16 +335,19 @@ async def character_size(update, context):
 
 async def character_age(update, context):
     logger.info('Age asked')
+
     query = update.callback_query
     await query.answer()
 
-    context.user_data["character_size"] = query.data.replace('character_size_', '')
+    # creating and saving character`s size
+    character_size = query.data.replace('size_select_', '')
+    context.user_data["size"] = character_size
 
     keyboard = [
-        [InlineKeyboardButton('Young', callback_data='character_age_young'), InlineKeyboardButton('Mature', callback_data='character_age_mature'), InlineKeyboardButton('Old', callback_data='character_age_old')]
+        [InlineKeyboardButton('Young', callback_data='age_select_young'), InlineKeyboardButton('Mature', callback_data='age_select_mature'), InlineKeyboardButton('Old', callback_data='age_select_old')]
     ]
 
-    character_race = context.user_data.get('character_race')
+    character_race = context.user_data.get('race')
     race_data = race_info.get(character_race, {})
 
     character_ages = race_data.get("age", "No age avaliable")
@@ -342,19 +379,20 @@ async def character_name(update, context):
     query = update.callback_query
     await query.answer()
 
-    context.user_data['character_age'] = query.data.replace('character_', '')
+    character_age = query.data.replace('age_select_', '')
+    context.user_data['age'] = character_age
 
-    character_race = context.user_data.get("character_race")
-    character_gender = context.user_data.get("character_gender") + '_names' # male_names / female_names
+    character_race = context.user_data.get("race")
+    character_gender = context.user_data.get("gender") + '_names' # male_names / female_names
     character_names = race_info[character_race][character_gender]
     
-    keyboard = build_inline_keyboard(character_names, character_names, row_width=3, callback_prefix='character_name_')
+    keyboard = build_inline_keyboard(character_names, character_names, row_width=3, callback_prefix='name_select_')
 
     with open('media/stages/dnd_name.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=update.effective_chat.id,
             message_id=update.callback_query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
@@ -368,36 +406,34 @@ async def character_name(update, context):
 
 
 async def character_surname(update, context):
-    # Получаем race из user_data
-    character_race = context.user_data.get("character_race")
+    character_race = context.user_data.get("race")
 
     if character_race in ["tiefling", "half_orc"]:
         if update.callback_query:
             query = update.callback_query
             await query.answer()
-            character_name = query.data.replace('character_name_', '')
-            context.user_data['character_name'] = character_name
+            character_name = query.data.replace('name_select_', '')
+            context.user_data['name'] = character_name
         elif update.message:
-            context.user_data['character_name'] = update.message.text.strip()
+            context.user_data['name'] = update.message.text.strip()
         return await character_appearance(update, context)
     
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        character_name = query.data.replace('character_name_', '')
-        context.user_data['character_name'] = character_name
+        character_name = query.data.replace('name_select_', '')
+        context.user_data['name'] = character_name
     elif update.message:
-        context.user_data['character_name'] = update.message.text.strip()
+        context.user_data['name'] = update.message.text.strip()
     
     character_surnames = race_info[character_race]["surnames"]
-    keyboard = build_inline_keyboard(character_surnames, character_surnames, row_width=3, callback_prefix='character_surname_')
+    keyboard = build_inline_keyboard(character_surnames, character_surnames, row_width=3, callback_prefix='surname_select_')
     
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        # ... ваша логика ...
-        await query.edit_message_caption(  # именно у объекта query!
-            reply_markup=keyboard,
+        await query.edit_message_caption(
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown",
             caption=(
                 "*Step 7: Select Or Enter Your Character's Surname.*\n\n"
@@ -411,15 +447,15 @@ async def character_surname(update, context):
             await context.bot.send_photo(
                 chat_id=update.effective_chat.id,
                 photo=photo,
-                caption="*Step 7: Select Or Enter Your Character's Surname.*\n\nChoose your character’s surname from below.",
-                reply_markup=keyboard,
+                caption="*Step 7: Select Or Enter Your Character's Surname.*\n\n"
+                "This is your chance to give your character an identity that will echo through legends and tales. "
+                "Will it be a surname of ancient power, a clever alias, or something entirely unique?\n\n"
+                "Choose your character’s surname from below. With this, your hero’s story truly begins!",
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 parse_mode="Markdown"
             )
 
-    return NAME
-
-
-
+    return SURNAME
 
 # choosing character appearance
 
@@ -429,9 +465,13 @@ async def character_appearance(update, context):
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        character_surname = query.data.replace('character_surname_', '')
-        character_fullname = context.user_data.get("character_name") + ' ' + character_surname
-        context.user_data['character_name'] = character_fullname
+
+        if 'name' in context.user_data:
+            character_surname = query.data.replace('surname_select_', '')
+            context.user_data['surname'] = character_surname
+        else:
+            character_name = query.data.replace('name_select_', '')
+            context.user_data['name'] = character_name
 
         with open('media/stages/dnd_appearance.png', 'rb') as photo:
             await context.bot.edit_message_media(
@@ -446,9 +486,13 @@ async def character_appearance(update, context):
                 )
             )
     elif update.message:
-        character_surname = update.message.text.strip()
-        character_fullname = context.user_data.get("character_name") + ' ' + character_surname
-        context.user_data['character_name'] = character_fullname
+
+        if 'name' in context.user_data:
+            character_surname = update.message.text.strip()
+            context.user_data['surname'] = character_surname
+        else:
+            character_name = update.message.text.strip()
+            context.user_data['name'] = character_name
 
         with open('media/stages/dnd_appearance.png', 'rb') as photo:
             await context.bot.send_photo(
@@ -471,19 +515,19 @@ async def character_worldview(update, context):
     character_worldviews = list(worldview_info.keys())
     character_worldview_titles = [worldview_info[character_worldview]["title"] for character_worldview in character_worldviews if character_worldview in worldview_info]
 
-    keyboard = build_inline_keyboard(character_worldview_titles, character_worldviews, row_width=3, callback_prefix='menu_')
+    keyboard = build_inline_keyboard(character_worldview_titles, character_worldviews, row_width=3, callback_prefix='worldview_menu_')
 
     if update.callback_query:
         query = update.callback_query
         await query.answer()
-        character_name = query.data.replace('character_name_', '')
-        context.user_data['character_name'] = character_name
+        character_appearance = query.data
+        context.user_data['appearance'] = character_appearance
 
         with open('media/stages/dnd_worldview.png', 'rb') as photo:
             await context.bot.edit_message_media(
                 chat_id=query.message.chat.id,
                 message_id=query.message.message_id,
-                reply_markup=keyboard,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 media=InputMediaPhoto(
                     media=photo,
                     parse_mode=ParseMode.MARKDOWN,
@@ -493,15 +537,13 @@ async def character_worldview(update, context):
                 )
             ) 
     elif update.message:
-        context.user_data['character_appearance'] = update.message.text
-
-        character_name = update.message.text.strip()
-        context.user_data['character_name'] = character_name
+        character_appearance = update.message.text
+        context.user_data['appearance'] = character_appearance
 
         with open('media/stages/dnd_worldview.png', 'rb') as photo:
             await context.bot.send_photo(
                 chat_id=update.message.chat.id,
-                reply_markup=keyboard,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 photo=photo,
                 caption=(
                     "*Step 9: Select Your Character’s Worldview*\n\nEvery hero sees the world through their own lens—shaped by their beliefs, values, and sense of right and wrong. Is your character guided by honor and justice, or do they follow their own code? Are they a force for good, a champion of order, or a free spirit who values independence above all?\n\nChoose your character’s worldview below. This step helps shape their motivations and the choices they’ll make on their journey!"
@@ -516,16 +558,16 @@ async def show_worldview_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_worldview = query.data.replace('menu_', '')
-    context.user_data["character_worldview"] = character_worldview
+    character_worldview = query.data.replace('worldview_menu_', '')
+    context.user_data["worldview"] = character_worldview
 
     worldview_data = worldview_info.get(character_worldview, {})
     worldview_title = worldview_data.get("title", "No title avaliable")
     worldview_description = worldview_data.get("description", "No description avaliable")
 
     keyboard = [
-        [InlineKeyboardButton("Choose this", callback_data=f'character_worldview_{character_worldview}')], 
-        [InlineKeyboardButton("Back", callback_data='back_to_worldview')]
+        [InlineKeyboardButton("Choose this", callback_data=f'worldview_select_{character_worldview}')], 
+        [InlineKeyboardButton("Back", callback_data='worldview_back')]
     ]
 
     await update.callback_query.edit_message_caption(
@@ -546,13 +588,13 @@ async def character_backstory(update, context):
     character_backstories = list(backstory_info.keys())
     character_backstories_titles = [backstory_info[character_backstory]["title"] for character_backstory in character_backstories if character_backstory in backstory_info]
 
-    keyboard = build_inline_keyboard(character_backstories_titles, character_backstories, row_width=3, callback_prefix='menu_')
+    keyboard = build_inline_keyboard(character_backstories_titles, character_backstories, row_width=3, callback_prefix='backstory_menu_')
 
     with open('media/stages/dnd_backstory.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=query.message.chat.id,
             message_id=query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
@@ -569,8 +611,8 @@ async def show_backstory_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = query.data.replace('menu_', '')
-    context.user_data["character_backstory"] = character_backstory
+    character_backstory = query.data.replace('backstory_menu_', '')
+    context.user_data["backstory"] = character_backstory
 
     backstory_data = backstory_info.get(character_backstory, {})
     backstory_title = backstory_data.get("title", "No title avaliable")
@@ -578,17 +620,16 @@ async def show_backstory_menu(update, context):
     image_path = backstory_data.get("image", None)
 
     keyboard = [
-        [InlineKeyboardButton("Choose this", callback_data=f'character_backstory_{character_backstory}')], 
-        [InlineKeyboardButton("Back", callback_data='back_to_backstory')]
+        [InlineKeyboardButton("Choose this", callback_data=f'backstory_select_{character_backstory}')], 
+        [InlineKeyboardButton("Back", callback_data='backstory_back')]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
 
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
-                reply_markup=reply_markup,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 media=InputMediaPhoto(
                     media=photo,
                     caption=f"*{backstory_title}*\n\n{backstory_description}",
@@ -598,7 +639,7 @@ async def show_backstory_menu(update, context):
     else:
         await query.edit_message_caption(
             caption=f"*{character_class}*\n\n{backstory_description}",
-            reply_markup=reply_markup,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
         )
 
@@ -612,16 +653,16 @@ async def character_traits(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = context.user_data.get("character_backstory")
-    character_trait_names = [trait["name"] for trait in backstory_info[character_backstory ]["personality_traits"]]
+    character_backstory = context.user_data.get("backstory")
+    character_trait_names = [trait["name"] for trait in backstory_info[character_backstory]["personality_traits"]]
 
-    keyboard = build_inline_keyboard(character_trait_names, character_trait_names, row_width=3, callback_prefix='menu_')
+    keyboard = build_inline_keyboard(character_trait_names, character_trait_names, row_width=3, callback_prefix='traits_menu_')
 
     with open('media/stages/dnd_traits.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=query.message.chat.id,
             message_id=query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
@@ -637,10 +678,9 @@ async def show_trait_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-
-    character_backstory = context.user_data.get("character_backstory")
+    character_backstory = context.user_data.get("backstory")
     backstory_data = backstory_info.get(character_backstory, {})
-    character_trait = query.data.replace('menu_', '')
+    character_trait = query.data.replace('traits_menu_', '')
     image_path = backstory_data.get("image", None)
     
     character_trait_description = next(
@@ -649,17 +689,16 @@ async def show_trait_menu(update, context):
     )
 
     keyboard = [
-        [InlineKeyboardButton("Choose this", callback_data=f'character_traits_{character_trait}')],
-        [InlineKeyboardButton("back", callback_data='back_to_traits')]
+        [InlineKeyboardButton("Choose this", callback_data=f'trait_select_{character_trait}')],
+        [InlineKeyboardButton("back", callback_data='traits_back')]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
 
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
-                reply_markup=reply_markup,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 media=InputMediaPhoto(
                     media=photo,
                     caption=f"*{character_trait}*\n\n{character_trait_description}",
@@ -669,7 +708,7 @@ async def show_trait_menu(update, context):
     else:
         await query.edit_message_caption(
             caption=f"*{character_trait}*\n\n{character_trait_description}",
-            reply_markup=reply_markup,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
         )
 
@@ -681,16 +720,16 @@ async def character_ideals(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = context.user_data.get("character_backstory")
+    character_backstory = context.user_data.get("backstory")
     character_ideals_names = [ideal["name"] for ideal in backstory_info[character_backstory ]["ideals"]]
 
-    keyboard = build_inline_keyboard(character_ideals_names, character_ideals_names, row_width=3, callback_prefix='menu_')
+    keyboard = build_inline_keyboard(character_ideals_names, character_ideals_names, row_width=3, callback_prefix='ideals_menu_')
 
     with open('media/stages/dnd_ideals.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=query.message.chat.id,
             message_id=query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
@@ -706,9 +745,9 @@ async def show_ideal_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = context.user_data.get("character_backstory")
+    character_backstory = context.user_data.get("backstory")
     backstory_data = backstory_info.get(character_backstory, {})
-    character_ideal = query.data.replace('menu_', '')
+    character_ideal = query.data.replace('ideals_menu_', '')
     image_path = backstory_data.get("image", None)
     
     character_ideal_description = next(
@@ -717,17 +756,16 @@ async def show_ideal_menu(update, context):
     )
 
     keyboard = [
-        [InlineKeyboardButton("Choose this", callback_data=f'character_ideals_{character_ideal}')],
-        [InlineKeyboardButton("back", callback_data='back_to_ideals')]
+        [InlineKeyboardButton("Choose this", callback_data=f'ideal_select_{character_ideal}')],
+        [InlineKeyboardButton("back", callback_data='ideals_back')]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
 
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
-                reply_markup=reply_markup,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 media=InputMediaPhoto(
                     media=photo,
                     caption=f"*{character_ideal}*\n\n{character_ideal_description}",
@@ -737,7 +775,7 @@ async def show_ideal_menu(update, context):
     else:
         await query.edit_message_caption(
             caption=f"*{character_ideal}*\n\n{character_ideal_description}",
-            reply_markup=reply_markup,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
         )
 
@@ -753,21 +791,21 @@ async def character_attachments(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = context.user_data.get("character_backstory")
+    character_backstory = context.user_data.get("backstory")
     character_attachments_names = [attachment["name"] for attachment in backstory_info[character_backstory]["attachments"]]
 
-    keyboard = build_inline_keyboard(character_attachments_names, character_attachments_names, row_width=3, callback_prefix='menu_')
+    keyboard = build_inline_keyboard(character_attachments_names, character_attachments_names, row_width=3, callback_prefix='attachments_menu_')
 
     with open('media/stages/dnd_attachments.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=query.message.chat.id,
             message_id=query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
                 caption=(
-                    f"*Step 12: Define Your Character’s Ideals*\n\nIdeals are the beliefs and guiding principles that shape your hero’s actions and decisions. Is your character driven by the pursuit of justice, loyalty to friends, a thirst for freedom, or the quest for knowledge? Their ideals reveal what truly matters most to them on their journey.\n\nDescribe your character’s core ideals below. These values will inspire your hero and guide them through every adventure!"
+                    f"*Step 13: Define Your Character’s Attachments*\n\nAdd depth to your hero by including meaningful attachments, such as personal items, heirlooms, or symbols of their journey. These objects can reflect your character’s history, beliefs, and values—perhaps a cherished locket, a battle-worn weapon, or a mysterious artifact.\n\nDescribe your character’s important attachments below. Each item helps build your hero’s story and connects them to the world in unique ways!"
                 )
             )
         ) 
@@ -778,9 +816,9 @@ async def show_attachment_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = context.user_data.get("character_backstory")
+    character_backstory = context.user_data.get("backstory")
     backstory_data = backstory_info.get(character_backstory, {})
-    character_attachment = query.data.replace('menu_', '')
+    character_attachment = query.data.replace('attachments_menu_', '')
     image_path = backstory_data.get("image", None)
     
     character_attachment_description = next(
@@ -789,17 +827,16 @@ async def show_attachment_menu(update, context):
     )
 
     keyboard = [
-        [InlineKeyboardButton("Choose this", callback_data=f'character_attachments_{character_attachment}')],
-        [InlineKeyboardButton("back", callback_data='back_to_attachments')]
+        [InlineKeyboardButton("Choose this", callback_data=f'attachment_select_{character_attachment}')],
+        [InlineKeyboardButton("back", callback_data='attachment_back')]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
 
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
-                reply_markup=reply_markup,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 media=InputMediaPhoto(
                     media=photo,
                     caption=f"*{character_attachment}*\n\n{character_attachment_description}",
@@ -809,7 +846,7 @@ async def show_attachment_menu(update, context):
     else:
         await query.edit_message_caption(
             caption=f"*{character_attachment}*\n\n{character_attachment_description}",
-            reply_markup=reply_markup,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
         )
 
@@ -826,21 +863,21 @@ async def character_weaknesses(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = context.user_data.get("character_backstory")
+    character_backstory = context.user_data.get("backstory")
     character_weaknesses_names = [weakness["name"] for weakness in backstory_info[character_backstory ]["weaknesses"]]
 
-    keyboard = build_inline_keyboard(character_weaknesses_names, character_weaknesses_names, row_width=3, callback_prefix='menu_')
+    keyboard = build_inline_keyboard(character_weaknesses_names, character_weaknesses_names, row_width=3, callback_prefix='weaknesses_menu_')
 
     with open('media/stages/dnd_weaknesses.png', 'rb') as photo:
         await context.bot.edit_message_media(
             chat_id=query.message.chat.id,
             message_id=query.message.message_id,
-            reply_markup=keyboard,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             media=InputMediaPhoto(
                 media=photo,
                 parse_mode=ParseMode.MARKDOWN,
                 caption=(
-                    f"*Step 12: Define Your Character’s Ideals*\n\nIdeals are the beliefs and guiding principles that shape your hero’s actions and decisions. Is your character driven by the pursuit of justice, loyalty to friends, a thirst for freedom, or the quest for knowledge? Their ideals reveal what truly matters most to them on their journey.\n\nDescribe your character’s core ideals below. These values will inspire your hero and guide them through every adventure!"
+                    f"*Step 14: Define Your Character’s Weaknesses*\n\nWeaknesses add depth and personality, making your character more relatable and their story more compelling. Are they impulsive or overly cautious? Do they struggle to trust, act on anger, or carry a hidden fear?\n\nDescribe your character’s weaknesses below. Embracing these imperfections will help bring your hero to life and open the door for personal growth and unforgettable adventures!"
                 )
             )
         ) 
@@ -853,9 +890,9 @@ async def show_weakness_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    character_backstory = context.user_data.get("character_backstory")
+    character_backstory = context.user_data.get("backstory")
     backstory_data = backstory_info.get(character_backstory, {})
-    character_weakness = query.data.replace('menu_', '')
+    character_weakness = query.data.replace('weaknesses_menu_', '')
     image_path = backstory_data.get("image", None)
     
     character_weakness_description = next(
@@ -864,17 +901,16 @@ async def show_weakness_menu(update, context):
     )
 
     keyboard = [
-        [InlineKeyboardButton("Choose this", callback_data=f'character_weaknesses_{character_weakness}')],
-        [InlineKeyboardButton("back", callback_data='back_to_weaknesses')]
+        [InlineKeyboardButton("Choose this", callback_data=f'weakness_select_{character_weakness}')],
+        [InlineKeyboardButton("back", callback_data='weaknesses_back')]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
 
     if image_path:
         with open(image_path, "rb") as photo:
             await context.bot.edit_message_media(
                 chat_id=update.effective_chat.id,
                 message_id=query.message.message_id,
-                reply_markup=reply_markup,
+                reply_markup=InlineKeyboardMarkup(keyboard),
                 media=InputMediaPhoto(
                     media=photo,
                     caption=f"*{character_weakness}*\n\n{character_weakness_description}",
@@ -884,7 +920,7 @@ async def show_weakness_menu(update, context):
     else:
         await query.edit_message_caption(
             caption=f"*{character_weakness}*\n\n{character_weakness_description}",
-            reply_markup=reply_markup,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
         )
 
@@ -893,26 +929,37 @@ async def show_weakness_menu(update, context):
 
 
 async def finish_creation(update, context):
+    logger.info('Character created')
 
     query = update.callback_query
     await query.answer()
     character_backstory = query.data
 
-    context.user_data['character_backstory'] = character_backstory
+    character_name = context.user_data['name'].replace('_', ' ')
+    character_class = context.user_data['class'].replace('_', ' ')
+    character_race = context.user_data['race'].replace('_', ' ')
+    character_age = context.user_data['age'].replace('_', ' ')
+    character_backstory = context.user_data['backstory'].replace('_', ' ')
+    character_appearance = context.user_data['appearance'].replace('_', ' ')
+    character_worldview = context.user_data['worldview'].replace('_', ' ')
 
+    keyboard = [[InlineKeyboardButton("Restart", callback_data='start_button')]]
 
-    character_name = context.user_data['character_name']
-    character_class = context.user_data['character_class']
-    character_race = context.user_data['character_race']
-    character_age = context.user_data['character_age']
-    character_backstory = context.user_data['character_backstory']
-    character_appearance = context.user_data['character_appearance']
-    character_worldview = context.user_data['character_worldview']
+    with open('media/stages/dnd_start.png', 'rb') as photo:
+        await context.bot.edit_message_media(
+            chat_id=query.message.chat.id,
+            message_id=query.message.message_id,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            media=InputMediaPhoto(
+                media=photo,
+                parse_mode=ParseMode.MARKDOWN,
+                caption=(
+                    f"Your new character for your lovely boardgame!\n\nName: {character_name}\nClass: {character_class}\nRace: {character_race}\nAge: {character_age}\nAppearance: {character_appearance}\nBackstory: {character_backstory}\nWorldview: {character_worldview}"
+                )
+            )
+        ) 
 
-    await update.effective_message.reply_text(f"Your new character for your lovely boardgame!\n\nName: {character_name}\nClass: {character_class}\nRace: {character_race}\nAge: {character_age}\nAppearance: {character_appearance}\nBackstory: {character_backstory}\nWorldview: {character_worldview}")
-    logger.info('Character created')
     return ConversationHandler.END
-
 
 
 
@@ -922,14 +969,13 @@ async def cancel(update, context):
     context.user_data.clear()
 
     keyboard = [[InlineKeyboardButton("Restart", callback_data='start_button')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
     
     with open('media/stages/dnd_cancel.png', 'rb') as photo:
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
             photo=photo,
             caption="*Adventure paused!*\n\nYour character creation has been cancelled. Sometimes even the bravest heroes need a break or a fresh start. When you’re ready to return, simply begin again and craft a new legend for the world of *Dungeons & Dragons*.\n\nFeel free to explore, rest, or gather inspiration. When the call to adventure returns, I’ll be here to guide you every step of the way!\n\nWant to try again? Click the *“Restart”* button to begin anew.",
-            reply_markup=reply_markup,
+            reply_markup=InlineKeyboardMarkup(keyboard),
             parse_mode="Markdown"
     )
 
@@ -943,63 +989,68 @@ character_creation = ConversationHandler(
     entry_points=[CallbackQueryHandler(character_race, pattern='^start_button$')],
     states={
         RACE: [
-            CallbackQueryHandler(character_class, pattern=r'^character_race_'),
-            CallbackQueryHandler(show_race_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_race, pattern='^back_to_race$'),
-            CallbackQueryHandler(show_race_more_info, pattern='^show_race_(info|features)$')
+            CallbackQueryHandler(show_race_menu, pattern=r'race_menu_.+$'),
+            CallbackQueryHandler(character_race, pattern='^race_back$'),
+            CallbackQueryHandler(show_race_more_info, pattern='^race_(info|features)$'),
+            CallbackQueryHandler(show_race_menu, pattern='^race_menu_back$'),
+            CallbackQueryHandler(character_class, pattern='^race_select$'),
         ],
         CLASS: [
-            CallbackQueryHandler(character_gender, pattern=r'character_class_'),
-            CallbackQueryHandler(show_class_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_class, pattern='^back_to_class$'),
-            CallbackQueryHandler(show_class_more_info, pattern='^show_class_(info|features)$')
+            CallbackQueryHandler(show_class_menu, pattern=r'class_menu_.+$'),
+            CallbackQueryHandler(character_class, pattern='^class_back$'),
+            CallbackQueryHandler(show_class_more_info, pattern='^class_(info|features)$'),
+            CallbackQueryHandler(show_race_menu, pattern='^class_menu_back$'),
+            CallbackQueryHandler(character_gender, pattern='^class_select$')
         ],
         GENDER: [
-            CallbackQueryHandler(character_size, pattern='^character_(male|female)$')
+            CallbackQueryHandler(character_size, pattern='^gender_select_(male|female)$')
         ],
         SIZE: [
-            CallbackQueryHandler(character_age, pattern='^character_size_(small|medium|big)$')
+            CallbackQueryHandler(character_age, pattern='^size_select_(small|medium|big)$')
         ],
         AGE: [
-            CallbackQueryHandler(character_name, pattern='^character_age_(young|mature|old)$')
+            CallbackQueryHandler(character_name, pattern='^age_select_(young|mature|old)$')
         ],
         NAME: [
-            CallbackQueryHandler(character_surname, pattern=r'character_name_'), #handler works when it sees a part of callback
+            CallbackQueryHandler(character_surname, pattern=r'name_select_'), #handler works when it sees a part of callback
             MessageHandler(filters.TEXT & ~filters.COMMAND, character_surname),
-            CallbackQueryHandler(character_appearance, pattern=r'character_surname_'),
+        ],
+        SURNAME: [
+            CallbackQueryHandler(character_appearance, pattern=r'surname_select'),
+            MessageHandler(filters.TEXT & ~filters.COMMAND, character_appearance),
         ],
         APPEARANCE: [
             MessageHandler(filters.TEXT & ~filters.COMMAND, character_worldview)
         ],
         WORLDVIEW: [
-            CallbackQueryHandler(character_backstory, pattern=r'character_worldview_'),
-            CallbackQueryHandler(show_worldview_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_worldview, pattern='^back_to_worldview$')
+            CallbackQueryHandler(character_backstory, pattern=r'^worldview_select_.+$'),
+            CallbackQueryHandler(show_worldview_menu, pattern=r'^worldview_menu_'),
+            CallbackQueryHandler(character_worldview, pattern='^worldview_back$')
         ],
         BACKSTORY: [
-            CallbackQueryHandler(character_traits, pattern=r'character_backstory_'),
-            CallbackQueryHandler(show_backstory_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_backstory, pattern='^back_to_backstory$')
+            CallbackQueryHandler(character_traits, pattern=r'backstory_select_.+$'),
+            CallbackQueryHandler(show_backstory_menu, pattern=r'^backstory_menu_'),
+            CallbackQueryHandler(character_backstory, pattern='^backstory_back$')
         ],
         TRAITS: [
-            CallbackQueryHandler(character_ideals, pattern=r'character_traits_'),
-            CallbackQueryHandler(show_trait_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_traits, pattern='^back_to_traits$')
+            CallbackQueryHandler(character_ideals, pattern=r'trait_select_.+$'),
+            CallbackQueryHandler(show_trait_menu, pattern=r'^traits_menu_'),
+            CallbackQueryHandler(character_traits, pattern='^traits_back$')
         ],
         IDEALS: [
-            CallbackQueryHandler(character_attachments, pattern=r'character_ideals_'),
-            CallbackQueryHandler(show_ideal_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_ideals, pattern='^back_to_ideals$')
+            CallbackQueryHandler(character_attachments, pattern=r'ideal_select_.+$'),
+            CallbackQueryHandler(show_ideal_menu, pattern=r'^ideals_menu_'),
+            CallbackQueryHandler(character_ideals, pattern='^ideals_back$')
         ],
         ATTACHMENTS: [
-            CallbackQueryHandler(character_weaknesses, pattern=r'character_attachments_'),
-            CallbackQueryHandler(show_attachment_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_attachments, pattern='^back_to_attachments$')
+            CallbackQueryHandler(character_weaknesses, pattern=r'attachment_select_.+$'),
+            CallbackQueryHandler(show_attachment_menu, pattern=r'^attachments_menu_'),
+            CallbackQueryHandler(character_attachments, pattern='^attachments_back$')
         ],
         WEAKNESSES: [
-            CallbackQueryHandler(finish_creation, pattern=r'character_weaknesses_'),
-            CallbackQueryHandler(show_weakness_menu, pattern='^menu_'),
-            CallbackQueryHandler(character_weaknesses, pattern='^back_to_weaknesses$')
+            CallbackQueryHandler(finish_creation, pattern=r'weakness_select_.+$'),
+            CallbackQueryHandler(show_weakness_menu, pattern=r'^weaknesses_menu_'),
+            CallbackQueryHandler(character_weaknesses, pattern='^weaknesses_back$')
         ]
     }, 
     fallbacks=[CommandHandler('cancel', cancel)]
