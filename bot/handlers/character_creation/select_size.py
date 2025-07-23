@@ -1,14 +1,14 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_age import character_age
+from .select_age import ask_age
 from utils.logger import logger
 from ..data import race_info
 from .states import SIZE
 
 
 
-async def character_size(update, context):
+async def ask_size(update, context):
     logger.info('Size asked')
 
     query = update.callback_query
@@ -48,5 +48,5 @@ async def character_size(update, context):
     return SIZE
 
 size_handlers = [
-    CallbackQueryHandler(character_age, pattern='^size_select_(small|medium|big)$')
+    CallbackQueryHandler(ask_age, pattern='^size_select_(small|medium|big)$')
 ]

@@ -1,11 +1,11 @@
 from telegram import InputMediaPhoto
 from telegram.ext import MessageHandler, filters
 from telegram.constants import ParseMode
-from .select_worldview import character_worldview
+from .select_worldview import ask_worldview
 from utils.logger import logger
 from .states import APPEARANCE
 
-async def character_appearance(update, context):
+async def ask_appearance(update, context):
     logger.info('Appearance asked')
 
     if update.callback_query:
@@ -60,5 +60,5 @@ async def character_appearance(update, context):
 
 
 appearance_handlers = [
-    MessageHandler(filters.TEXT & ~filters.COMMAND, character_worldview)
+    MessageHandler(filters.TEXT & ~filters.COMMAND, ask_worldview)
 ]

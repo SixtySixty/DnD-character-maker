@@ -1,8 +1,8 @@
-from .character_creation import character_creation_handler
+from .character_creation import handle_character_creation
 
 from .utils import build_inline_keyboard, escape_markdown
 
-from .select_race import race_handlers, character_race
+from .select_race import race_handlers, ask_race
 from .select_class import class_handlers
 from .select_gender import gender_handlers
 from .select_size import size_handlers
@@ -22,10 +22,10 @@ from .cancel_creation import cancel_character_creation
 RACE, CLASS, GENDER, SIZE, AGE, NAME, SURNAME, APPEARANCE, WORLDVIEW, TRAITS, IDEALS, ATTACHMENTS, WEAKNESSES, BACKSTORY, LANGUAGE = range(15)
 
 __all__ = [
-    'character_creation_handler',
+    'handle_character_creation',
     'build_inline_keyboard',
     'escape_markdown',
-    'race_handlers', 'character_race',
+    'race_handlers', 'ask_race',
     'class_handlers', 'gender_handlers', 'size_handlers', 'age_handlers',
     'name_handlers', 'surname_handlers', 'appearance_handlers',
     'worldview_handlers', 'backstory_handlers', 'traits_handlers',

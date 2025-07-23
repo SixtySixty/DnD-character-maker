@@ -6,19 +6,15 @@ from .utils import build_inline_keyboard
 from ..data import class_info
 from .states import CLASS
 
-async def character_class(update, context):
-    logger.info('Class asked')
+async def ask_class(update, context):
 
     query = update.callback_query
     await query.answer()
 
-    logger.info(f"Callback data received: {query.data}")
+    logger.info("User %s started class selection", update.effective_user.id)
 
     character_classes = list(class_info.keys())
     character_classes_titles = [class_info[character_class]['title'] for character_class in character_classes if character_class in class_info]
-
-    logger.info(character_classes_titles)
-    logger.info(character_classes)
 
     keyboard = build_inline_keyboard(character_classes_titles, character_classes, row_width=3, callback_prefix='class_menu_')
 
@@ -46,7 +42,7 @@ async def show_class_menu(update, context):
     query = update.callback_query
     await query.answer()
 
-    logger.info(f"Callback data received: {query.data}")
+    logger.debug("User %s callback data: %s", update.effective_user.id, query.data)
 
     if query.data.startswith("class_menu_back"):
         character_class = context.user_data.get('class', "")
@@ -54,7 +50,7 @@ async def show_class_menu(update, context):
         character_class = query.data.replace("class_menu_", "")
         context.user_data['class'] = character_class
 
-    logger.info(f'{character_class}')
+    logger.info("User %s selected race: %s", update.effective_user.id, character_class)
 
     class_data = class_info.get(character_class, {})
     class_title = class_data.get('title', "No title available.")
@@ -90,13 +86,13 @@ async def show_class_menu(update, context):
     return CLASS
         
 
-async def show_class_more_info(update, context):
+async def show_class_info(update, context):
     query = update.callback_query
     await query.answer()
 
-    logger.info(f"Callback data received: {query.data}")
-
     character_class = context.user_data.get('class', "")
+
+    logger.info("User %s opened class_info: %s", update.effective_user.id, character_class)
 
     class_data = class_info.get(character_class, {})
 
@@ -123,12 +119,12 @@ async def show_class_more_info(update, context):
 
     return CLASS
 
-from .select_gender import character_gender
+from .select_gender import ask_gender
 
 class_handlers = [
     CallbackQueryHandler(show_class_menu, pattern=r'^class_menu_.+$'),
-    CallbackQueryHandler(character_class, pattern='^class_back$'),
-    CallbackQueryHandler(show_class_more_info, pattern='^class_(info|features)$'),
+    CallbackQueryHandler(ask_class, pattern='^class_back$'),
+    CallbackQueryHandler(show_class_info, pattern='^class_(info|features)$'),
     CallbackQueryHandler(show_class_menu, pattern='^class_menu_back$'),
-    CallbackQueryHandler(character_gender, pattern='^class_select$')
+    CallbackQueryHandler(ask_gender, pattern='^class_select$')
 ]

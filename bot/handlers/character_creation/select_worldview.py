@@ -1,13 +1,13 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_backstory import character_backstory
+from .select_backstory import ask_backstory
 from utils.logger import logger
 from .utils import build_inline_keyboard
 from ..data import worldview_info
 from .states import WORLDVIEW
 
-async def character_worldview(update, context):
+async def ask_worldview(update, context):
     logger.info('Worldview asked')
 
     character_worldviews = list(worldview_info.keys())
@@ -75,7 +75,7 @@ async def show_worldview_menu(update, context):
     )
 
 worldview_handlers = [
-    CallbackQueryHandler(character_backstory, pattern=r'^worldview_select_.+$'),
+    CallbackQueryHandler(ask_backstory, pattern=r'^worldview_select_.+$'),
     CallbackQueryHandler(show_worldview_menu, pattern=r'^worldview_menu_'),
-    CallbackQueryHandler(character_worldview, pattern='^worldview_back$')
+    CallbackQueryHandler(ask_worldview, pattern='^worldview_back$')
 ]

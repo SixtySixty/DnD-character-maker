@@ -1,11 +1,11 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_size import character_size
+from .select_size import ask_size
 from utils.logger import logger
 from .states import GENDER
 
-async def character_gender(update, context):
+async def ask_gender(update, context):
     logger.info('Gender asked')
 
     query = update.callback_query
@@ -32,5 +32,5 @@ async def character_gender(update, context):
     return GENDER
 
 gender_handlers = [
-    CallbackQueryHandler(character_size, pattern='^gender_select_(male|female)$')
+    CallbackQueryHandler(ask_size, pattern='^gender_select_(male|female)$')
 ]

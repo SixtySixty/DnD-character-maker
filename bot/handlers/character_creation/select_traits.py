@@ -1,14 +1,14 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_ideals import character_ideals
+from .select_ideals import ask_ideals
 from utils.logger import logger
 from .utils import build_inline_keyboard
 from ..data import backstory_info
 from .states import TRAITS
 
 
-async def character_traits(update, context):
+async def ask_traits(update, context):
     logger.info('Traits asked')
 
     query = update.callback_query
@@ -86,7 +86,7 @@ async def show_trait_menu(update, context):
         )
 
 traits_handlers = [
-    CallbackQueryHandler(character_ideals, pattern=r'trait_select_.+$'),
+    CallbackQueryHandler(ask_ideals, pattern=r'trait_select_.+$'),
     CallbackQueryHandler(show_trait_menu, pattern=r'^traits_menu_'),
-    CallbackQueryHandler(character_traits, pattern='^traits_back$')
+    CallbackQueryHandler(ask_traits, pattern='^traits_back$')
 ]

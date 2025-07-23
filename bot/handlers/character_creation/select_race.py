@@ -6,8 +6,8 @@ from .utils import build_inline_keyboard
 from ..data import race_info
 from .states import RACE
 
-async def character_race(update, context):
-    logger.info('Race asked')
+async def ask_race(update, context):
+    logger.info("User %s started race selection", update.effective_user.id)
 
     # getting data to create buttons in inline keyboard
     races = list(race_info.keys())
@@ -43,27 +43,27 @@ async def show_race_menu(update, context):
     query = update.callback_query
     await query.answer()
 
+    logger.debug("User %s callback data: %s", update.effective_user.id, query.data)
+
     # editing and saving data
     if query.data.startswith("race_menu_back"):
         character_race = context.user_data.get('race', "")
         languages = context.user_data.get('languages', [])
+        logger.info("User %s returned to race menu, race: %s", update.effective_user.id, character_race)
+
     elif query.data.startswith("race_menu_"):
         character_race = query.data.replace("race_menu_", "")
         context.user_data['race'] = character_race
-
-        languages = race_info[character_race]['language']
+        languages = race_info.get(character_race, {}).get('language', [])
         context.user_data['languages'] = languages
+        
+        counter_extra_language = race_info.get(character_race, {}).get('extra_language')
 
-        if 'extra_language' in race_info[character_race]:
-            counter_extra_language = race_info[character_race]['extra_language']
+        if counter_extra_language:
             context.user_data['counter_extra_language'] = counter_extra_language
+            logger.info("User %s has extra languages: %s", update.effective_user.id, counter_extra_language)
 
-            logger.info(f'{counter_extra_language}')
-
-
-    logger.info(f'{character_race}')
-
-    logger.info(f'{languages}')
+        logger.info("User %s selected race: %s", update.effective_user.id, character_race)
 
     # getting data to show race info
     race_data = race_info.get(character_race, {})
@@ -92,6 +92,7 @@ async def show_race_menu(update, context):
                     parse_mode='Markdown'
                 )
             )
+    # if image doesnt upload than we`ll just change caption
     else:
         await update.callback_query.edit_message_caption(
             caption=f"*{race_title}*\n\n{race_description}",
@@ -103,11 +104,15 @@ async def show_race_menu(update, context):
 
 
 
-async def show_race_more_info(update, context):
+
+
+async def show_race_info(update, context):
     query = update.callback_query
     await query.answer()    
 
     character_race = context.user_data.get('race', '')
+
+    logger.info("User %s opened race_info: %s", update.effective_user.id, character_race)
 
     race_data = race_info.get(character_race, {})
 
@@ -134,12 +139,12 @@ async def show_race_more_info(update, context):
 
     return RACE
 
-from .select_class import character_class
+from .select_class import ask_class
 
 race_handlers = [
     CallbackQueryHandler(show_race_menu, pattern=r'race_menu_.+$'),
-    CallbackQueryHandler(character_race, pattern='^race_back$'),
-    CallbackQueryHandler(show_race_more_info, pattern='^race_(info|features)$'),
+    CallbackQueryHandler(ask_race, pattern='^race_back$'),
+    CallbackQueryHandler(show_race_info, pattern='^race_(info|features)$'),
     CallbackQueryHandler(show_race_menu, pattern='^race_menu_back$'),
-    CallbackQueryHandler(character_class, pattern='^race_select$'),
+    CallbackQueryHandler(ask_class, pattern='^race_select$'),
 ] 

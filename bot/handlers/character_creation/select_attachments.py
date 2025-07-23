@@ -1,13 +1,13 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_weaknesses import character_weaknesses
+from .select_weaknesses import ask_weaknesses
 from utils.logger import logger
 from .utils import build_inline_keyboard
 from ..data import backstory_info
 from .states import ATTACHMENTS
 
-async def character_attachments(update, context):
+async def ask_attachments(update, context):
     logger.info('Attachments asked')
 
     query = update.callback_query
@@ -73,7 +73,7 @@ async def show_attachment_menu(update, context):
         )
 
 attachments_handlers = [
-    CallbackQueryHandler(character_weaknesses, pattern=r'attachment_select_.+$'),
+    CallbackQueryHandler(ask_weaknesses, pattern=r'attachment_select_.+$'),
     CallbackQueryHandler(show_attachment_menu, pattern=r'^attachments_menu_'),
-    CallbackQueryHandler(character_attachments, pattern='^attachments_back$')
+    CallbackQueryHandler(ask_attachments, pattern='^attachments_back$')
 ]

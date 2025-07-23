@@ -1,14 +1,14 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_traits import character_traits
+from .select_traits import ask_traits
 from utils.logger import logger
 from .utils import build_inline_keyboard
 from ..data import backstory_info
 from .states import BACKSTORY
 
 
-async def character_backstory(update, context):
+async def ask_backstory(update, context):
     logger.info('Backstory asked')
 
     query = update.callback_query
@@ -73,7 +73,7 @@ async def show_backstory_menu(update, context):
         )
 
 backstory_handlers = [
-    CallbackQueryHandler(character_traits, pattern=r'backstory_select_.+$'),
+    CallbackQueryHandler(ask_traits, pattern=r'backstory_select_.+$'),
     CallbackQueryHandler(show_backstory_menu, pattern=r'^backstory_menu_'),
-    CallbackQueryHandler(character_backstory, pattern='^backstory_back$')
+    CallbackQueryHandler(ask_backstory, pattern='^backstory_back$')
 ]

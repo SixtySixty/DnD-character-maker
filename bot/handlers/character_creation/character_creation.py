@@ -1,7 +1,7 @@
 from telegram.ext import ConversationHandler, CommandHandler, CallbackQueryHandler
 
 # Импорт всех хендлеров этапов из файлов этого пакета
-from .select_race import race_handlers, character_race
+from .select_race import race_handlers, ask_race
 from .select_class import class_handlers
 from .select_gender import gender_handlers
 from .select_size import size_handlers
@@ -21,8 +21,8 @@ from .states import RACE, CLASS, GENDER, SIZE, AGE, NAME, SURNAME, APPEARANCE, W
 
 # RACE, CLASS, GENDER, SIZE, AGE, NAME, SURNAME, APPEARANCE, WORLDVIEW, TRAITS, IDEALS, ATTACHMENTS, WEAKNESSES, BACKSTORY, LANGUAGE = range(15)
 
-character_creation_handler = ConversationHandler(
-    entry_points=[CallbackQueryHandler(character_race, pattern='^start_button$')],
+handle_character_creation = ConversationHandler(
+    entry_points=[CallbackQueryHandler(ask_race, pattern='^start_button$')],
     states={
         RACE: race_handlers,
         CLASS: class_handlers,

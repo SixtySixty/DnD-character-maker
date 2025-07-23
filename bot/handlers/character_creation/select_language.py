@@ -6,7 +6,7 @@ from utils.logger import logger
 from .utils import build_inline_keyboard
 from .states import LANGUAGE
 
-async def character_languages(update, context):
+async def ask_languages(update, context):
     logger.info('Asked language')
 
     query = update.callback_query
@@ -45,7 +45,7 @@ async def character_languages(update, context):
     return LANGUAGE
 
 
-async def checking_languages_selected(update, context):
+async def handle_language_selection(update, context):
     query = update.callback_query
     await query.answer()
 
@@ -64,14 +64,14 @@ async def checking_languages_selected(update, context):
                 return await finish_character_creation(update, context)
 
         else:
-            return await character_language_error(update, context)
+            return await show_language_error(update, context)
 
-    return await character_languages(update, context)
-
-
+    return await ask_languages(update, context)
 
 
-async def character_language_error(update, context):
+
+
+async def show_language_error(update, context):
     logger.info('Error')
 
     query = update.callback_query
@@ -98,6 +98,6 @@ async def character_language_error(update, context):
     return LANGUAGE
 
 language_handlers = [
-    CallbackQueryHandler(checking_languages_selected, pattern=r'language_select_.+$'),
-    CallbackQueryHandler(character_languages, pattern='^languages_back$')
+    CallbackQueryHandler(handle_language_selection, pattern=r'language_select_.+$'),
+    CallbackQueryHandler(ask_languages, pattern='^languages_back$')
 ]

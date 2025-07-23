@@ -1,13 +1,13 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_language import checking_languages_selected
+from .select_language import handle_language_selection
 from utils.logger import logger
 from .utils import build_inline_keyboard
 from ..data import backstory_info
 from .states import WEAKNESSES
 
-async def character_weaknesses(update, context):
+async def ask_weaknesses(update, context):
     logger.info('Weaknesses asked')
 
     query = update.callback_query
@@ -75,7 +75,7 @@ async def show_weakness_menu(update, context):
         )
 
 weaknesses_handlers = [
-    CallbackQueryHandler(checking_languages_selected, pattern=r'weakness_select_.+$'),
+    CallbackQueryHandler(handle_language_selection, pattern=r'weakness_select_.+$'),
     CallbackQueryHandler(show_weakness_menu, pattern=r'^weaknesses_menu_'),
-    CallbackQueryHandler(character_weaknesses, pattern='^weaknesses_back$')
+    CallbackQueryHandler(ask_weaknesses, pattern='^weaknesses_back$')
 ]

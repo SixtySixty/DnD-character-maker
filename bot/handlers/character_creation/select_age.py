@@ -1,13 +1,13 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler
 from telegram.constants import ParseMode
-from .select_name_surname import character_name
+from .select_name_surname import ask_name
 from utils.logger import logger
 from ..data import race_info
 from .states import AGE
 
 
-async def character_age(update, context):
+async def ask_age(update, context):
     logger.info('Age asked')
 
     query = update.callback_query
@@ -43,5 +43,5 @@ async def character_age(update, context):
     return AGE
 
 age_handlers = [
-    CallbackQueryHandler(character_name, pattern='^age_select_(young|mature|old)$')
+    CallbackQueryHandler(ask_name, pattern='^age_select_(young|mature|old)$')
 ]

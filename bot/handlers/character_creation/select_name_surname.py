@@ -1,7 +1,7 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from telegram.ext import CallbackQueryHandler, MessageHandler, filters
 from telegram.constants import ParseMode
-from .select_appearance import character_appearance
+from .select_appearance import ask_appearance
 from utils.logger import logger
 from .utils import build_inline_keyboard
 from ..data import race_info
@@ -9,7 +9,7 @@ from .states import NAME, SURNAME
 
 # choosing / enter name 
 
-async def character_name(update, context):
+async def ask_name(update, context):
     logger.info('Name asked')
 
     query = update.callback_query
@@ -41,7 +41,9 @@ async def character_name(update, context):
     return NAME
 
 
-async def character_surname(update, context):
+async def ask_surname(update, context):
+    logger.info('Surname asked')
+
     character_race = context.user_data.get('race', "")
 
     if character_race in ["tiefling", "half_orc"]:
@@ -52,7 +54,7 @@ async def character_surname(update, context):
             context.user_data['name'] = character_name
         elif update.message:
             context.user_data['name'] = update.message.text.strip()
-        return await character_appearance(update, context)
+        return await ask_appearance(update, context)
     
     if update.callback_query:
         query = update.callback_query
@@ -98,14 +100,14 @@ async def character_surname(update, context):
 
 
 name_handlers = [
-    CallbackQueryHandler(character_surname, pattern=r'name_select_'),
-    MessageHandler(filters.TEXT & ~filters.COMMAND, character_surname),
+    CallbackQueryHandler(ask_surname, pattern=r'name_select_'),
+    MessageHandler(filters.TEXT & ~filters.COMMAND, ask_surname),
 ]
 
 
 surname_handlers = [
-    CallbackQueryHandler(character_appearance, pattern=r'surname_select'),
-    CallbackQueryHandler(character_appearance, pattern='^surname_skip$'),
-    MessageHandler(filters.TEXT & ~filters.COMMAND, character_appearance),
+    CallbackQueryHandler(ask_appearance, pattern=r'surname_select'),
+    CallbackQueryHandler(ask_appearance, pattern='^surname_skip$'),
+    MessageHandler(filters.TEXT & ~filters.COMMAND, ask_appearance),
 ]
 
