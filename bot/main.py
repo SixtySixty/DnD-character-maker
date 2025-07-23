@@ -1,5 +1,5 @@
 from telegram.ext import ApplicationBuilder, CommandHandler
-from .handlers import start_command, character_creation
+from .handlers import start_command, character_creation_handler
 from config import TOKEN
 from utils.logger import logger
 
@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     app.add_handler(CommandHandler('start', start_command))
     
-    app.add_handler(character_creation)
+    app.add_handler(character_creation_handler)
 
     logger.info('Poiling')
     app.run_polling(poll_interval=3)

@@ -25,11 +25,11 @@ race_info = {
             "big": ["4'5\" (135 cm)", "176 lbs (80 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 70 ages",
-            "70-200 ages",
-            "over 350 ages"
-        ],
+        "age": {
+            "young": "under 70 ages",
+            "mature": "70-200 ages",
+            "old": "over 350 ages"
+        },
         "language": ["Common", "Dwarvish"],
         "recommended_worldview": "Lawful Good",
         "height_range": "4'0\"-5'0\" (120-150 cm)",
@@ -108,11 +108,11 @@ race_info = {
             "big": ["4'9\" (145 cm)", "209 lbs (95 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 70 ages",
-            "70-200 ages",
-            "over 350 ages"
-        ],
+        "age": {
+            "young": "under 70 ages",
+            "mature": "70-200 ages",
+            "old": "over 350 ages"
+        },
         "language": ["Common", "Dwarvish"],
         "recommended_worldview": "Lawful Good",
         "height_range": "4'0\"-5'0\" (120-150 cm)",
@@ -191,12 +191,13 @@ race_info = {
             "big": ["5'11\" (180 cm)", "143 lbs (65 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 120 ages",
-            "120–250 ages",
-            "over 750 ages"
-        ],
-        "language": ["Common", "Elvish", "One extra language (any)"],
+        "age": {
+            "young": "under 120 ages",
+            "mature": "120–250 ages",
+            "old": "over 750 ages"
+        },
+        "language": ["Common", "Elvish"],
+        "extra_language": 1,
         "recommended_worldview": "Chaotic Good",
         "height_range": "5'0\"–6'0\" (150–180 cm)",
         "weight_range": "90–145 lbs (41–66 kg)",
@@ -277,11 +278,11 @@ race_info = {
             "big": ["5'9\" (175 cm)", "137 lbs (62 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 120 ages",
-            "120–250 ages",
-            "over 750 ages"
-        ],
+        "age": {
+            "young": "under 120 ages",
+            "mature": "120–250 ages",
+            "old": "over 750 ages"
+        },
         "language": ["Common", "Elvish"],
         "recommended_worldview": "Chaotic Good",
         "height_range": "5'0\"–6'0\" (150–180 cm)",
@@ -362,11 +363,11 @@ race_info = {
             "big": ["5'3\" (160 cm)", "117 lbs (53 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 120 ages",
-            "120–250 ages",
-            "over 750 ages"
-        ],
+        "age": {
+            "young": "under 120 ages",
+            "mature": "120–250 ages",
+            "old": "over 750 ages"
+        },
         "language": ["Common", "Elvish", "Undercommon"],
         "recommended_worldview": "Chaotic Evil",
         "height_range": "4'5\"–5'5\" (135–165 cm)",
@@ -447,11 +448,11 @@ race_info = {
             "big": ["3'5\" (105 cm)", "66 lbs (30 kg)"]
         },
         "size": "Small",
-        "age": [
-            "under 35 ages",
-            "35–80 ages",
-            "over 150 ages"
-        ],
+        "age": {
+            "young": "under 35 ages",
+            "mature": "35–80 ages",
+            "old": "over 150 ages"
+        },
         "language": ["Common", "Halfling"],
         "recommended_worldview": "Lawful Good",
         "height_range": "2'5\"–3'5\" (75–105 cm)",
@@ -524,11 +525,11 @@ race_info = {
             "big": ["3'7\" (110 cm)", "71 lbs (32 kg)"]
         },
         "size": "Small",
-        "age": [
-            "under 35 ages",
-            "35–80 ages",
-            "over 150 ages"
-        ],
+        "age": {
+            "young": "under 35 ages",
+            "mature": "35–80 ages",
+            "old": "over 150 ages"
+        },
         "language": ["Common", "Halfling"],
         "recommended_worldview": "Lawful Good",
         "height_range": "2'7\"–3'7\" (80–110 cm)",
@@ -602,12 +603,13 @@ race_info = {
             "big": ["6'5\" (195 cm)", "220 lbs (100 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 20 ages",
-            "20–40 ages",
-            "over 60 ages"
-        ],
-        "language": ["Common", "One extra language (any)"],
+        "age": {
+            "young": "under 20 ages",
+            "mature": "20–40 ages",
+            "old": "over 60 ages"
+        },
+        "language": ["Common"],
+        "extra_language": 1,
         "recommended_worldview": "All worldviews",
         "height_range": "4'9\"–6'5\" (145–195 cm)",
         "weight_range": "99–220 lbs (45–100 kg)",
@@ -667,11 +669,11 @@ race_info = {
             "big": ["6'7\" (200 cm)", "287 lbs (130 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 12 ages",
-            "12–30 ages",
-            "over 80 ages"
-        ],
+        "age": {
+            "young": "under 12 ages",
+            "mature": "12–30 ages",
+            "old": "over 80 ages"
+        },
         "language": ["Common", "Draconic"],
         "recommended_worldview": "Lawful Good",
         "height_range": "6'0\"–6'8\" (183–203 cm)",
@@ -740,12 +742,12 @@ race_info = {
             "big": ["3'9\" (115 cm)", "60 lbs (27 kg)"]
         },
         "size": "Small",
-        "age": [
-            "under 60 ages",
-            "60–120 ages",
-            "over 350 ages"
-        ],
-        "language": ["Common", "Gnomish", "Speak with Small Beasts"],
+        "age": {
+            "young": "under 60 ages",
+            "mature": "60–120 ages",
+            "old": "over 350 ages"
+        },
+        "language": ["Common", "Gnomish"],
         "recommended_worldview": "Neutral Good",
         "height_range": "2'9\"–3'9\" (85–115 cm)",
         "weight_range": "40–60 lbs (18–27 kg)",
@@ -817,11 +819,11 @@ race_info = {
             "big": ["3'11\" (120 cm)", "66 lbs (30 kg)"]
         },
         "size": "Small",
-        "age": [
-            "under 60 ages",
-            "60–120 ages",
-            "over 350 ages"
-        ],
+        "age": {
+            "young": "under 60 ages",
+            "mature": "60–120 ages",
+            "old": "over 350 ages"
+        },
         "language": ["Common", "Gnomish"],
         "recommended_worldview": "Neutral Good",
         "height_range": "2'11\"–3'11\" (90–120 cm)",
@@ -894,12 +896,13 @@ race_info = {
             "big": ["6'1\" (185 cm)", "187 lbs (85 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 30 ages",
-            "30–70 ages",
-            "over 180 ages"
-        ],
-        "language": ["Common", "Elvish", "Two extra languages (any)"],
+        "age": {
+            "young": "under 30 ages",
+            "mature": "30–70 ages",
+            "old": "over 180 ages"
+        },
+        "language": ["Common", "Elvish"],
+        "extra_language": 2,
         "recommended_worldview": "Chaotic Good",
         "height_range": "5'0\"–6'2\" (150–188 cm)",
         "weight_range": "100–190 lbs (45–86 kg)",
@@ -967,11 +970,11 @@ race_info = {
             "big": ["6'7\" (200 cm)", "265 lbs (120 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 20 ages",
-            "20–40 ages",
-            "over 75 ages"
-        ],
+        "age": {
+            "young": "under 20 ages",
+            "mature": "20–40 ages",
+            "old": "over 75 ages"
+        },
         "language": ["Common", "Orc"],
         "recommended_worldview": "Chaotic Neutral",
         "height_range": "5'0\"–7'0\" (150–215 cm)",
@@ -1042,11 +1045,11 @@ race_info = {
             "big": ["6'1\" (185 cm)", "154 lbs (70 kg)"]
         },
         "size": "Medium",
-        "age": [
-            "under 25 ages",
-            "25–40 ages",
-            "over 80 ages"
-        ],
+        "age": {
+            "young": "under 25 ages",
+            "mature": "25–40 ages",
+            "old": "over 80 ages"
+        },
         "language": ["Common", "Infernal"],
         "recommended_worldview": "Chaotic Evil",
         "height_range": "4'9\"–6'1\" (145–185 cm)",

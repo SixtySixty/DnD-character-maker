@@ -5,7 +5,7 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Insight", "Religion"],
         "tool_proficiencies": [],
-        "languages": ["Two of your choice"],
+        "extra_language": 2,
         "equipment": [
             "Holy symbol",
             "Prayer book or prayer wheel",
@@ -60,7 +60,6 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Deception", "Sleight of Hand"],
         "tool_proficiencies": ["Disguise kit", "Forgery kit"],
-        "languages": [],
         "equipment": [
             "Set of fine clothes",
             "Disguise kit",
@@ -121,7 +120,6 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Deception", "Stealth"],
         "tool_proficiencies": ["One type of gaming set", "Thieves’ tools"],
-        "languages": [],
         "equipment": [
             "Crowbar",
             "Set of dark common clothes with a hood",
@@ -183,7 +181,6 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Acrobatics", "Performance"],
         "tool_proficiencies": ["Disguise kit", "One musical instrument"],
-        "languages": [],
         "equipment": [
             "Musical instrument",
             "Favor from an admirer",
@@ -250,7 +247,6 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Animal Handling", "Survival"],
         "tool_proficiencies": ["One type of artisan’s tools", "Vehicles (land)"],
-        "languages": [],
         "equipment": [
             "Set of artisan’s tools",
             "Shovel",
@@ -317,7 +313,7 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Insight", "Persuasion"],
         "tool_proficiencies": ["One type of artisan’s tools"],
-        "languages": ["One of your choice"],
+        "extra_language": 1,
         "equipment": [
             "Set of artisan’s tools",
             "Letter of introduction from guild",
@@ -393,7 +389,7 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Medicine", "Religion"],
         "tool_proficiencies": ["Herbalism kit"],
-        "languages": ["One of your choice"],
+        "extra_language": 1,
         "equipment": [
             "Scroll case of notes from your studies",
             "Winter blanket",
@@ -448,7 +444,7 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["History", "Persuasion"],
         "tool_proficiencies": ["One type of gaming set"],
-        "languages": ["One of your choice"],
+        "extra_language": 1,
         "equipment": [
             "Set of fine clothes",
             "Signet ring",
@@ -502,7 +498,7 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Athletics", "Survival"],
         "tool_proficiencies": ["One type of musical instrument"],
-        "languages": ["One of your choice"],
+        "extra_language": 1,
         "equipment": [
             "Staff",
             "Hunting trap",
@@ -557,7 +553,7 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Arcana", "History"],
         "tool_proficiencies": [],
-        "languages": ["Two of your choice"],
+        "extra_language": 2,
         "equipment": [
             "Bottle of black ink",
             "Quill",
@@ -624,7 +620,6 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Athletics", "Perception"],
         "tool_proficiencies": ["Navigator's tools", "Vehicles (water)"],
-        "languages": [],
         "equipment": [
             "Belaying pin (club)",
             "50 feet of silk rope",
@@ -679,7 +674,6 @@ backstory_info = {
         "features": "more info",
         "skill_proficiencies": ["Athletics", "Intimidation"],
         "tool_proficiencies": ["One type of gaming set", "Vehicles (land)"],
-        "languages": [],
         "equipment": [
             "Insignia of rank",
             "Trophy taken from a fallen enemy",
