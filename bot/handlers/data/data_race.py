@@ -6,7 +6,9 @@ race_info = {
         "title": "Hill Dwarf",
         "description": "Hill dwarves are tough, wise, and deeply connected to their clans, known for their resilience, sense of tradition, and strong community bonds.",
         "detailed_description": (
-            "Hill dwarves are native to deep mountain strongholds and ancient subterranean halls. They are slightly shorter and stockier than their mountain cousins. Renowned for their wisdom and endurance, hill dwarves are stoic in adversity and slow to trust outsiders. Community, clan loyalty, craftsmanship, and the worship of their deities form the backbone of their culture."
+            "Brave and hardy, dwarves are skilled warriors, miners, stonecutters, and metallurgists. Their courage and endurance rival taller races. Skin tones range from dark brown to light reddish hues, often earth-like shades. Hair is generally black, gray, or brown; pale dwarves might have red hair. \n\n"
+            "Living over 400 years, elders recall worlds long changed, giving them a unique worldview absent in shorter-lived races. Sturdy as the mountains they cherish, dwarves stand firm through the ages. They honor clan traditions tracing back to ancient strongholds and revere gods who prize hard work, battle skill, and smithing.\n\n"
+            "Their kingdoms lie deep beneath mountains, rich in precious metals and gems. Clans form society’s core; even distant dwarves uphold clan ties with pride. Away from home, dwarves often work as craftsmen, mercenaries, or guards, renowned for bravery and loyalty.\n\n"
         ),
         "features": "some more info",
         "male_names": [
@@ -16,7 +18,7 @@ race_info = {
             "Artin", "Bardryn", "Dagnal", "Eldeth", "Gunnloda", "Hiln", "Kathra", "Kristryd", "Riswynn"
         ],
         "surnames": [
-            "Balderk", "Fireforge", "Ironfist", "Loderr", "Rumnaheim", "Strakeln", "Torunn", "Ungart"
+            "Balderk", "Fireforge", "Ironfist", "Loderr", "Rumnaheim", "Strakeln", "Torunn", "Ungart", "Holderheck"
         ],
         "speed": "25 feet",
         "body_size": {
@@ -26,11 +28,12 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 70 ages",
-            "mature": "70-200 ages",
-            "old": "over 350 ages"
+            "young": ["under 70 ages", (25, 70)],
+            "mature": ["70-200 ages", (70, 200)],
+            "old": ["over 350 ages", (350, 500)]
         },
         "language": ["Common", "Dwarvish"],
+        "extra_language": 0,   
         "recommended_worldview": "Lawful Good",
         "height_range": "4'0\"-5'0\" (120-150 cm)",
         "weight_range": "120-170 lbs (54-77 kg)",
@@ -99,7 +102,8 @@ race_info = {
             "Artin", "Bardryn", "Dagnal", "Eldeth", "Gunnloda", "Hiln", "Kathra", "Kristryd", "Riswynn"
         ],
         "surnames": [
-            "Balderk", "Fireforge", "Ironfist", "Loderr", "Rumnaheim", "Strakeln", "Torunn", "Ungart"
+            "Balderk", "Fireforge", "Ironfist", "Loderr", "Rumnaheim", "Strakeln", "Torunn", "Ungart",
+            "Holderheck"
         ],
         "speed": "25 feet",
         "body_size": {
@@ -109,11 +113,12 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 70 ages",
-            "mature": "70-200 ages",
-            "old": "over 350 ages"
+            "young": ["under 70 ages", (25, 70)],
+            "mature": ["70-200 ages", (70, 200)],
+            "old": ["over 350 ages", (350, 500)]
         },
         "language": ["Common", "Dwarvish"],
+        "extra_language": 0,   
         "recommended_worldview": "Lawful Good",
         "height_range": "4'0\"-5'0\" (120-150 cm)",
         "weight_range": "120-180 lbs (54-82 kg)",
@@ -196,6 +201,11 @@ race_info = {
             "mature": "120–250 ages",
             "old": "over 750 ages"
         },
+        "age": {
+            "young": ["under 120 ages", (40, 120)],
+            "mature": ["120–250 ages", (120, 250)],
+            "old": ["over 750 ages", (750, 1100)]
+        },
         "language": ["Common", "Elvish"],
         "extra_language": 1,
         "recommended_worldview": "Chaotic Good",
@@ -267,9 +277,7 @@ race_info = {
             "Briana", "Caelynn", "Drusilia", "Felosial", "Keyleth", "Leshanna", "Shanairra", "Thia", "Valanthe"
         ],
         "surnames": [
-            "Amakiir (Gemflower)", "Galanodel (Moonwhisper)", "Holimion (Diamonddew)",
-            "Liadon (Silverfrond)", "Meliamne (Oakenheel)", "Nai'lo (Nightbreeze)",
-            "Siannodel (Moonbrook)", "Xiloscient (Goldpetal)"
+            "Amakiir", "Galanodel", "Holimion","Liadon", "Meliamne", "Nai'lo", "Siannodel", "Xiloscient", "Ilfelkiir"
         ],
         "speed": "35 feet",
         "body_size": {
@@ -279,11 +287,12 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 120 ages",
-            "mature": "120–250 ages",
-            "old": "over 750 ages"
+            "young": ["under 120 ages", (40, 120)],
+            "mature": ["120–250 ages", (120, 250)],
+            "old": ["over 750 ages", (750, 1100)]
         },
         "language": ["Common", "Elvish"],
+        "extra_language": 0,   
         "recommended_worldview": "Chaotic Good",
         "height_range": "5'0\"–6'0\" (150–180 cm)",
         "weight_range": "90–145 lbs (41–66 kg)",
@@ -348,13 +357,13 @@ race_info = {
         ),
         "features": "some more info",
         "male_names": [
-            "Drizzt", "Jarlaxle", "Pharaun", "Ryld", "Solaufein", "Zaknafein"
+            "Drizzt", "Jarlaxle", "Pharaun", "Ryld", "Zaknafein", "Gromph", "Malaggar", "Nisstyre", "Solaufein"
         ],
         "female_names": [
-            "Briza", "Eclavdra", "Liriel", "Quenthel", "Sos’Umptu", "Vierna"
+            "Vierna", "Briza", "Maya", "Quenthel", "Sos’Umptu", "Zesstra", "Eclavdra", "Shi’nayne", "Xullrae"
         ],
         "surnames": [
-            "Baenre", "Barrison", "Del'Armgo", "Do'Urden", "Hun'ett", "Mizzrym", "Oblodra", "Ssrune"
+            "Do’Urden", "Faen Tlabbar", "Xorlarrin", "Baenre", "Mizzrym", "Ry’Salka", "Hun’ett", "T’sarran", "Barrison Del’Armgo"
         ],
         "speed": "30 feet",
         "body_size": {
@@ -364,11 +373,12 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 120 ages",
-            "mature": "120–250 ages",
-            "old": "over 750 ages"
+            "young": ["under 120 ages", (40, 120)],
+            "mature": ["120–250 ages", (120, 250)],
+            "old": ["over 750 ages", (750, 1100)]
         },
         "language": ["Common", "Elvish", "Undercommon"],
+        "extra_language": 0,   
         "recommended_worldview": "Chaotic Evil",
         "height_range": "4'5\"–5'5\" (135–165 cm)",
         "weight_range": "75–120 lbs (34–55 kg)",
@@ -453,7 +463,13 @@ race_info = {
             "mature": "35–80 ages",
             "old": "over 150 ages"
         },
+        "age": {
+            "young": ["under 35 ages", (20, 35)],
+            "mature": ["35–80 ages", (35, 80)],
+            "old": ["over 150 ages", (150, 220)]
+        },
         "language": ["Common", "Halfling"],
+        "extra_language": 0,   
         "recommended_worldview": "Lawful Good",
         "height_range": "2'5\"–3'5\" (75–105 cm)",
         "weight_range": "40–66 lbs (18–30 kg)",
@@ -526,11 +542,12 @@ race_info = {
         },
         "size": "Small",
         "age": {
-            "young": "under 35 ages",
-            "mature": "35–80 ages",
-            "old": "over 150 ages"
+            "young": ["under 35 ages", (20, 35)],
+            "mature": ["35–80 ages", (35, 80)],
+            "old": ["over 150 ages", (150, 220)]
         },
         "language": ["Common", "Halfling"],
+        "extra_language": 0,   
         "recommended_worldview": "Lawful Good",
         "height_range": "2'7\"–3'7\" (80–110 cm)",
         "weight_range": "44–71 lbs (20–32 kg)",
@@ -594,7 +611,7 @@ race_info = {
             "Arveene", "Esvele", "Jhessail", "Kerri", "Lureene", "Miri", "Rowan", "Shandri", "Tessele"
         ],
         "surnames": [
-            "Brightwood", "Helder", "Hornraven", "Lackman", "Stormwind", "Windrivver"
+            "Amblecrown", "Buckman", "Dundragon", "Evenwood", "Greycastle", "Tallstag", "Windrivver", "Marsh", "Hoffman"
         ],
         "speed": "30 feet",
         "body_size": {
@@ -604,9 +621,9 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 20 ages",
-            "mature": "20–40 ages",
-            "old": "over 60 ages"
+            "young": ["under 20 ages", (16, 20)],
+            "mature": ["20–40 ages", (20, 40)],
+            "old": ["over 150 ages", (60, 75)]
         },
         "language": ["Common"],
         "extra_language": 1,
@@ -660,7 +677,7 @@ race_info = {
             "Akra", "Biri", "Daar", "Farideh", "Harann", "Havilar", "Kava", "Korinn", "Mishann", "Sora"
         ],
         "surnames": [
-            "Clethtinthiallor", "Daardendrian", "Delmirev", "Drachedandion", "Fenkenkabradon", "Kepeshkmolik", "Kerrhylon", "Turnuroth"
+            "Clethtinthiallor", "Daardendrian", "Delmirev", "Drachedandion", "Fenkenkabradon", "Kepeshkmolik", "Kerrhylon", "Norixius", "Turnuroth"
         ],
         "speed": "30 feet",
         "body_size": {
@@ -670,11 +687,12 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 12 ages",
-            "mature": "12–30 ages",
-            "old": "over 80 ages"
+            "young": ["under 12 ages", (8, 12)],
+            "mature": ["12–30 ages", (12, 30)],
+            "old": ["over 150 ages", (150, 210)]
         },
         "language": ["Common", "Draconic"],
+        "extra_language": 0,   
         "recommended_worldview": "Lawful Good",
         "height_range": "6'0\"–6'8\" (183–203 cm)",
         "weight_range": "220–350 lbs (100–159 kg)",
@@ -733,7 +751,7 @@ race_info = {
             "Bimpnottin", "Breena", "Caramip", "Carlin", "Donella", "Duvamil", "Ellyjobell", "Ellywick", "Loopmottin"
         ],
         "surnames": [
-            "Beren", "Daergel", "Folkor", "Nackle", "Murnig", "Ningel", "Raulnor", "Scheppen", "Timbers", "Turen"
+            "Beren", "Daergel", "Folkor", "Nackle", "Murnig", "Ningel", "Raulnor", "Scheppen", "Timbers"
         ],
         "speed": "25 feet",
         "body_size": {
@@ -743,11 +761,12 @@ race_info = {
         },
         "size": "Small",
         "age": {
-            "young": "under 60 ages",
-            "mature": "60–120 ages",
-            "old": "over 350 ages"
+            "young": ["under 70 ages", (25, 70)],
+            "mature": ["70-200 ages", (70, 200)],
+            "old": ["over 350 ages", (350, 500)]
         },
         "language": ["Common", "Gnomish"],
+        "extra_language": 0,   
         "recommended_worldview": "Neutral Good",
         "height_range": "2'9\"–3'9\" (85–115 cm)",
         "weight_range": "40–60 lbs (18–27 kg)",
@@ -810,7 +829,7 @@ race_info = {
             "Bimpnottin", "Breena", "Caramip", "Carlin", "Donella", "Duvamil", "Ellyjobell", "Ellywick", "Loopmottin"
         ],
         "surnames": [
-            "Beren", "Daergel", "Folkor", "Nackle", "Murnig", "Ningel", "Raulnor", "Scheppen", "Timbers", "Turen"
+            "Beren", "Daergel", "Folkor", "Nackle", "Murnig", "Ningel", "Raulnor", "Scheppen", "Timbers"
         ],
         "speed": "25 feet",
         "body_size": {
@@ -820,11 +839,12 @@ race_info = {
         },
         "size": "Small",
         "age": {
-            "young": "under 60 ages",
-            "mature": "60–120 ages",
-            "old": "over 350 ages"
+            "young": ["under 70 ages", (25, 70)],
+            "mature": ["70-200 ages", (70, 200)],
+            "old": ["over 350 ages", (350, 500)]
         },
         "language": ["Common", "Gnomish"],
+        "extra_language": 0,   
         "recommended_worldview": "Neutral Good",
         "height_range": "2'11\"–3'11\" (90–120 cm)",
         "weight_range": "44–66 lbs (20–30 kg)",
@@ -887,7 +907,7 @@ race_info = {
             "Adrie", "Drusilia", "Felosial", "Keyleth", "Naivara", "Shanairra", "Thia", "Valanthe", "Xanaphia"
         ],
         "surnames": [
-            "Amakiir", "Holimion", "Liadon", "Nai'lo", "Xiloscient"
+            "Amakiir", "Holimion", "Ilphelkiir", "Liadon", "Meliamne", "Nai'lo", "Siannodel", "Xiloscient", "Moonbrook"
         ],
         "speed": "30 feet",
         "body_size": {
@@ -897,9 +917,9 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 30 ages",
-            "mature": "30–70 ages",
-            "old": "over 180 ages"
+            "young": ["under 30 ages", (18, 30)],
+            "mature": ["30–70 ages", (30, 70)],
+            "old": ["over 180 ages", (180, 300)]
         },
         "language": ["Common", "Elvish"],
         "extra_language": 2,
@@ -960,9 +980,7 @@ race_info = {
         "female_names": [
             "Baggi", "Emen", "Engong", "Kansif", "Myev", "Neega", "Ovak", "Ownka", "Shautha"
         ],
-        "surnames": [
-            "No family names; half-orc names are typically chosen to inspire fear or valor."
-        ],
+        "surnames": [],
         "speed": "30 feet",
         "body_size": {
             "small": ["5'1\" (155 cm)", "132 lbs (60 kg)"],
@@ -971,11 +989,12 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 20 ages",
-            "mature": "20–40 ages",
-            "old": "over 75 ages"
+            "young": ["under 30 ages", (15, 20)],
+            "mature": ["30–70 ages", (20, 40)],
+            "old": ["over 180 ages", (75, 90)]
         },
         "language": ["Common", "Orc"],
+        "extra_language": 0,   
         "recommended_worldview": "Chaotic Neutral",
         "height_range": "5'0\"–7'0\" (150–215 cm)",
         "weight_range": "125–300 lbs (57–136 kg)",
@@ -1035,9 +1054,7 @@ race_info = {
         "female_names": [
             "Akta", "Anakis", "Bryseis", "Criella", "Damaia", "Ea", "Kallista", "Lerissa", "Makaria"
         ],
-        "surnames": [
-            "No family names; tieflings often use given names only or invent surnames."
-        ],
+        "surnames": [],
         "speed": "30 feet",
         "body_size": {
             "small": ["4'9\" (145 cm)", "88 lbs (40 kg)"],
@@ -1046,11 +1063,12 @@ race_info = {
         },
         "size": "Medium",
         "age": {
-            "young": "under 25 ages",
-            "mature": "25–40 ages",
-            "old": "over 80 ages"
+            "young": ["under 25 ages", (25, 25)],
+            "mature": ["25–40 ages", (25, 40)],
+            "old": ["over 80 ages", (80, 95)]
         },
         "language": ["Common", "Infernal"],
+        "extra_language": 0,   
         "recommended_worldview": "Chaotic Evil",
         "height_range": "4'9\"–6'1\" (145–185 cm)",
         "weight_range": "88–154 lbs (40–70 kg)",

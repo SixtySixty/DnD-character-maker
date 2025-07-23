@@ -18,9 +18,8 @@ async def ask_languages(update, context):
     character_languages = context.user_data.get('languages', [])
 
     current_character_languages = ""
-
-    for i in range (0, len(character_languages)):
-        current_character_languages += f"{i+1}) " + character_languages[i] + "\n" 
+    for i in range(len(character_languages)):
+        current_character_languages += f"{i+1}) " + character_languages[i] + "\n"
     
     keyboard = build_inline_keyboard(dnd_languages, dnd_languages, row_width=3, callback_prefix='language_select_')
 

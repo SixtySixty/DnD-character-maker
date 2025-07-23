@@ -12,7 +12,7 @@ class_info = {
         "primary_ability": ["Strength"],
         "secondary_ability": ["Constitution"],
         "saving_throws": ["Strength", "Constitution"],
-        "armor_proficiencies": ["Light armor", "Medium armor", "Shields (no heavy armor)"],
+        "armor_proficiencies": ["Light armor", "Medium armor", "Shields"],
         "weapon_proficiencies": ["Simple weapons", "Martial weapons"],
         "tool_proficiencies": [],
         "skills_choices": [

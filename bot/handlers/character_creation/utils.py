@@ -1,5 +1,7 @@
 from telegram import InlineKeyboardButton
 import re
+import random
+
 
 
 # creating inline keyboard
@@ -23,3 +25,9 @@ def build_inline_keyboard(items, values, row_width=2, callback_prefix=''):
 
 def escape_markdown(text):
     return re.sub(r'([*_`\[\]])', r'\\\1', str(text))
+
+
+# giving a random number between two numbers
+
+def random_number(min_value: int, max_value: int) -> int:
+    return random.randint(min_value, max_value)

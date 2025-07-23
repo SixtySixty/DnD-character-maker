@@ -3,7 +3,7 @@ from telegram.ext import CallbackQueryHandler, MessageHandler, filters
 from telegram.constants import ParseMode
 from .select_appearance import ask_appearance
 from utils.logger import logger
-from .utils import build_inline_keyboard
+from .utils import build_inline_keyboard, random_number
 from ..data import race_info
 from .states import NAME, SURNAME
 
@@ -16,11 +16,16 @@ async def ask_name(update, context):
     await query.answer()
 
     character_age = query.data.replace("age_select_", "")
-    context.user_data['age'] = character_age
 
-    character_race = context.user_data.get('race')
+    character_race = context.user_data.get('race', "")
+    race_data = race_info.get(character_race, {})
+
+    # auto calculating age of character (randomly) 
+    character_age_range = race_data['age'][character_age][1]
+    context.user_data["age"] = random_number(*character_age_range)
+
     character_gender = context.user_data.get('gender') + "_names" # male_names / female_names
-    character_names = race_info[character_race][character_gender]
+    character_names = race_data[character_gender]
     
     keyboard = build_inline_keyboard(character_names, character_names, row_width=3, callback_prefix='name_select_')
 

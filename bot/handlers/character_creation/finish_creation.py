@@ -28,9 +28,10 @@ async def finish_character_creation(update, context):
         character_surname = ''
 
     character_size = context.user_data['size']
+    character_height = context.user_data['height']
+    character_weight = context.user_data['weight']
 
     character_age = context.user_data['age']
-    character_age_title = race_info[character_race]['age'][character_age]
 
     character_appearance = context.user_data['appearance']
 
@@ -41,6 +42,11 @@ async def finish_character_creation(update, context):
     character_worldview_title = worldview_info[character_worldview]['title']
 
     character_languages = context.user_data['languages']
+
+    character_languages_str = ""
+
+    for i in range (0, len(character_languages)):
+        character_languages_str += f" - " + character_languages[i] + "\n"
 
     keyboard = [[InlineKeyboardButton("Restart", callback_data='start_button')]]
 
@@ -57,12 +63,14 @@ async def finish_character_creation(update, context):
                     f"Name: {escape_markdown(character_name)} {escape_markdown(character_surname)}\n"
                     f"Class: {escape_markdown(character_class_title)}\n"
                     f"Race: {escape_markdown(character_race_title)}\n"
-                    f"Age: {escape_markdown(character_age_title)}\n"
+                    f"Age: {escape_markdown(character_age)}\n"
                     f"Size: {escape_markdown(character_size)}\n"
+                    f"Height: {escape_markdown(character_height)}\n"
+                    f"Weight: {escape_markdown(character_weight)}\n"
                     f"Appearance: {escape_markdown(character_appearance)}\n"
                     f"Backstory: {escape_markdown(character_backstory_title)}\n"
                     f"Worldview: {escape_markdown(character_worldview_title)}\n"
-                    f"Counter extra language: {escape_markdown(character_languages)}"
+                    f"Languages you know:\n {escape_markdown(character_languages_str)}"
                 )
             )
         ) 
