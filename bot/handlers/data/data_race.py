@@ -4,11 +4,20 @@
 race_info = {
     "hill_dwarf": {
         "title": "Hill Dwarf",
-        "description": "Hill dwarves are tough, wise, and deeply connected to their clans, known for their resilience, sense of tradition, and strong community bonds.",
+        "description": (
+            "Hill dwarves are sturdy and wise, known for their resilience and keen insight. Living in tight-knit clans beneath rolling hills, they have earthy skin tones and cherish their long beards.\n\nThey value tradition and family ties, possess a strong sense of honor, and are driven by loyalty and inherited wisdom.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Dwarvish\n"
+            "- *Height range*: 4'0\"-5'0\" (120-150 cm)\n"
+            "- *Weight range*: 120-170 lbs (54-77 kg)\n"
+            "- *Weapons*: Battleaxe, Handaxe, Light Hammer, Warhammer\n"
+            "- *Duration of life*: up to 350 ages\n"
+            "- *Recommended classes*: Cleric, Fighter, Paladin, Ranger\n"),
         "detailed_description": (
-            "Brave and hardy, dwarves are skilled warriors, miners, stonecutters, and metallurgists. Their courage and endurance rival taller races. Skin tones range from dark brown to light reddish hues, often earth-like shades. Hair is generally black, gray, or brown; pale dwarves might have red hair. \n\n"
-            "Living over 400 years, elders recall worlds long changed, giving them a unique worldview absent in shorter-lived races. Sturdy as the mountains they cherish, dwarves stand firm through the ages. They honor clan traditions tracing back to ancient strongholds and revere gods who prize hard work, battle skill, and smithing.\n\n"
-            "Their kingdoms lie deep beneath mountains, rich in precious metals and gems. Clans form society’s core; even distant dwarves uphold clan ties with pride. Away from home, dwarves often work as craftsmen, mercenaries, or guards, renowned for bravery and loyalty.\n\n"
+            "Dwarves are sturdy warriors, miners, stoneworkers, and smiths. Though just under 5 feet tall, they’re dense and broad, weighing as much as much taller people. Their skin is earthy brown, sometimes reddish; hair is usually dark or brown and worn long, with pale dwarves sometimes having red hair. Male dwarves highly value their beards.\n\n"
+            "Dwarves can live over 400 years, giving them a unique outlook and strong traditions. They are loyal, determined, and slow to forgive, with wrongs against one often becoming clan disputes.\n\n"
+            "Dwarven kingdoms stretch deep under mountains, where they mine gems and gold. The clan is central to their society, and losing clan ties is the greatest shame. Many dwarves abroad work as skilled smiths, jewelers, or respected mercenaries.\n\n"
+            "Dwarves adventure for treasure, divine guidance, or to restore clan honor. Their devotion to hard work, tradition, and ancestors motivates them throughout their long lives."
         ),
         "features": "some more info",
         "male_names": [
@@ -90,9 +99,18 @@ race_info = {
 
     "mountain_dwarf": {
         "title": "Mountain Dwarf",
-        "description": "Mountain dwarves are hardy and strong, with an unyielding spirit and martial traditions. Their culture is steeped in proud craftsmanship, ancient stone keeps, and battlefield honor.",
+        "description": (
+            "Mountain dwarves are hardy and proud, famed for their strength and steadfastness. Dwelling in great halls carved into rugged mountains, they have fair or ruddy skin and thick, well-kept beards.\n\nThey uphold tradition and craftsmanship, value clan honor, and possess unbreakable loyalty and enduring courage.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Dwarvish\n"
+            "- *Height range*: 4'0\"-5'0\" (120-150 cm)\n"
+            "- *Weight range*: 120-180 lbs (54-82 kg)\n"
+            "- *Weapons*: Battleaxe, Handaxe, Light Hammer, Warhammer\n"
+            "- *Duration of life*: up to 350 ages\n"
+            "- *Recommended classes*: Fighter, Paladin, Barbarian\n"
+        ),
         "detailed_description": (
-            "Mountain dwarves are outstanding smiths and warriors. They value clans and history, pride themselves on their martial prowess, and are stubborn in the face of adversity. Living in ancient mountain fortresses, they are tireless defenders of their homes and heritage."
+            "Mountain dwarves are hardy and unyielding folk, famed for their unwavering strength and endurance. They dwell in vast stone citadels deep within rugged mountains, where the clang of hammers and the glow of forges fill the halls and the scent of metal and earth lingers in the air. Mountain dwarves prize tradition, skill, and their proud lineage above all.\n\nWith lifespans reaching about 350 years, they approach life with patience and determined resolve. Mountain dwarves are stoic in adversity, fiercely loyal to clan and kin, and slow to trust outsiders, though quick to defend their homeland and honor. Their pride is matched only by their discipline, and they are known to stand firm against any foe or hardship.\n\nMost excel as master smiths, warriors, or protectors, pursuing excellence in craft and combat. Many set out as adventurers to prove their mettle, reclaim lost relics, or achieve legendary feats, carrying the unbreakable spirit and ancient pride of their mountain homes into the wider world."
         ),
         "features": "some more info",
         "male_names": [
@@ -175,9 +193,18 @@ race_info = {
 
     "high_elf": {
         "title": "High Elf",
-        "description": "High elves are a refined and proud race, known for their keen intellect, mastery of magic, and artistic flair. They live longer than other elves, have refined manners, and are often considered arrogant, but they also strive for harmony and perfection. High elves value knowledge, independence, and have an innate talent for the study of magic.",
+        "description": (
+            "High elves are graceful and intelligent, known for their keen minds and natural talent for magic. Living in elegant, ancient communities, they have slender builds, fair or bronze skin, and striking eyes.\n\nThey value learning, tradition, and beauty, showing both curiosity and pride. Their devotion to study and artistry sets them apart from other races.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Elvish\n"
+            "- *Height range*: 5'0\"–6'0\" (150–180 cm)\n"
+            "- *Weight range*: 90–145 lbs (41–66 kg)\n"
+            "- *Weapons*: Longsword, Shortsword, Shortbow, Longbow\n"
+            "- *Duration of life*: up to 750 ages\n"
+            "- *Recommended classes*: Wizard, Ranger, Fighter\n"
+        ),
         "detailed_description": (
-            "High elves typically hail from ancient, hidden forests or luminous cities protected by powerful magic. They embrace both cerebral and aesthetic pursuits, spending years—sometimes decades—perfecting their skills in art, arcane study, and swordplay. While outsiders may see them as aloof or proud, high elves often feel a responsibility to preserve knowledge and guard the balance between the mundane and the mystical. Their lives are marked by a quest for excellence and the pursuit of beauty in all things."
+            "Elves are a magical people with otherworldly grace, living in airy places—ancient forests or silver homes crowned with glowing spires. Gentle breezes carry soft melodies and delicate scents. They cherish nature, magic, music, poetry, and all that is beautiful.\n\nLiving over 700 years, elves gain broad perspective. They often find events amusing, driven more by curiosity than greed. Slow to make friends or enemies and even slower to forgive, they respond to minor slights with disdain and serious offenses with vengeance. Flexible like young branches, they prefer diplomacy but fiercely defend their homes with sword, bow, and strategy.\n\nMost live in small forest villages, hunting, gathering, and crafting without harming nature. Some trade metals they don’t mine. Traveling elves become bards, artists, or sages. Passionate about travel, they study, explore, and master magic and combat, preferring a slower pace than humans and sometimes joining rebels or moral causes."
         ),
         "features": "some more info",
         "male_names": [
@@ -265,9 +292,18 @@ race_info = {
     },
     "wood_elf": {
         "title": "Wood Elf",
-        "description": "Wood elves are graceful, attuned to nature, and gifted hunters. They are known for keen senses, speed, and a deep bond with the wilderness.",
+        "description": (
+            "Wood elves are swift and perceptive, living in harmony with forests and nature. They are slender, with copper-toned skin and green or hazel eyes, blending easily into woodland surroundings.\n\nThey value freedom, stealth, and close kinship, excelling at archery and survival. Their quiet wisdom and loyalty to their communities define their character.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Elvish\n"
+            "- *Height range*: 5'0\"–6'0\" (150–180 cm)\n"
+            "- *Weight range*: 90–145 lbs (41–66 kg)\n"
+            "- *Weapons*: Longsword, Shortsword, Shortbow, Longbow\n"
+            "- *Duration of life*: up to 750 ages\n"
+            "- *Recommended classes*: Ranger, Rogue, Druid\n"
+        ),
         "detailed_description": (
-            "Wood elves dwell in ancient forests, living in harmony with the land and its cycles. They are elusive, rarely leaving a trace, and are swift runners and skilled archers. Their culture centers around freedom, adaptability, and the protection of untouched wilds. Many outsiders see them as mysterious and wild, but within their communities, they value compassion and respect for all living things."
+            "Wood elves are a mystical people with a deep connection to forests, living in hidden villages beneath leafy canopies or within natural halls shaped by ancient magic. Gentle breezes carry soft songs and wild scents through their homes. Wood elves value nature, harmony, freedom, and all forms of natural beauty.\n\nWith lifespans over 700 years, they gain a wide perspective and react to the world with gentle amusement, driven by curiosity more than ambition. They are patient and slow to trust, yet fiercely protective when threatened. Offenses are met with restraint, but grave wrongs spark decisive action. Agile and adaptable like the trees themselves, wood elves prefer diplomacy and camouflage but defend their realms with keen archery and woodland cunning.\n\nMost wood elves hunt, gather, and craft without harming their forests. Skilled in stealth and the arts of survival, some become scouts or guides beyond their lands, valued by those seeking their wisdom and mastery of the wild."
         ),
         "features": "some more info",
         "male_names": [
@@ -351,9 +387,18 @@ race_info = {
 
     "dark_elf": {
         "title": "Dark Elf (Drow)",
-        "description": "Drow are mysterious and feared elves from the Underdark, known for their striking appearance, innate magic, and deadly cunning.",
+        "description": (
+            "Dark elves are agile and mysterious, renowned for their cunning and magical prowess. Dwelling in vast subterranean cities, they have obsidian skin, white or silver hair, and striking red or purple eyes.\n\nDrow society values secrecy, ambition, and sharp intellect. Though often mistrusted by others, drow are fiercely independent and possess an enigmatic charm.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Elvish, Undercommon\n"
+            "- *Height range*: 4'5\"–5'5\" (135–165 cm)\n"
+            "- *Weight range*: 75–120 lbs (34–55 kg)\n"
+            "- *Weapons*: Rapier, Shortsword, Hand Crossbow\n"
+            "- *Duration of life*: up to 750 ages\n"
+            "- *Recommended classes*: Rogue, Wizard, Cleric\n"
+        ),
         "detailed_description": (
-            "Drow society thrives in the deep realms beneath the surface, ruled by powerful matriarchs and the ever-present threat of betrayal. Their obsidian skin, silvery or white hair, and violet eyes set them apart. Drow are masters of stealth, magic, and intrigue. Despite their reputation for cruelty and ambition, individual drow may seek redemption or a different path on the surface world."
+            "Drow are mysterious elves who dwell in vast, shadowy cities deep beneath the earth, living among twisting caverns and halls aglow with eerie magical light. Whispers and subtle magic fill their homes, the air tinged with the scent of rare fungi and minerals. Drow treasure secrecy, ambition, cunning, and the beauty found in darkness and shadow.\n\nWith lifespans over 700 years, drow develop a keen awareness of intrigue and ever-shifting alliances. They're cautious and slow to trust, but respond decisively to betrayal. Minor slights are ignored; true insults spark long-lasting revenge. Flexible and elusive, drow rely on diplomacy or subterfuge, but defend their domains with formidable sorcery and precise tactics.\n\nMost drow master magic and stealth, thriving as spies, assassins, or nobles in a rigid society. Some—driven by curiosity or a desire for redemption—venture beyond the Underdark, becoming adventurers, outcasts, or enigmatic allies valued for their skills and rare insight."
         ),
         "features": "some more info",
         "male_names": [
@@ -437,9 +482,18 @@ race_info = {
 
     "lightfoot_halfling": {
         "title": "Lightfoot Halfling",
-        "description": "Lightfoot halflings are friendly, quick, and unassuming. They thrive on curiosity, luck, and a knack for remaining unseen.",
+        "description": (
+            "Lightfoot halflings enjoy the comforts of home, the pleasures of food and song, and the thrill of adventure. Whether in bustling city quarters or peaceful farmlands, they blend into societies easily, charming friends and eluding danger through agility and stealth.\n\nThey rarely seek out conflict but will defend their homes with surprising courage and cunning.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Halfling\n"
+            "- *Height range*: 2'5\"–3'5\" (75–105 cm)\n"
+            "- *Weight range*: 40–66 lbs (18–30 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 150 ages\n"
+            "- *Recommended classes*: Rogue, Bard\n"
+        ),
         "detailed_description": (
-            "Lightfoot halflings enjoy the comforts of home, the pleasures of food and song, and the thrill of adventure. Whether in bustling city quarters or peaceful farmlands, they blend into societies easily, charming friends and eluding danger through agility and stealth. They rarely seek out conflict but will defend their homes with surprising courage and cunning."
+            "Lightfoot halflings are small, nimble folk known for their cheerful nature and quick wits. They live in cozy, hidden communities nestled in peaceful countryside or gentle hills, where soft breezes carry the scent of fresh earth and blooming flowers. Lightfoots value freedom, friendship, and curiosity.\n\nWith lifespans around 250 years, they see the world with optimism and a playful spirit. They are cautious but warm, quick to trust good company, and gifted with natural stealth and agility. Lightfoot halflings prefer diplomacy and wit over conflict but will stand firm to protect loved ones.\n\nMost lightfoots are skilled in farming, crafting, or trade, blending easily in larger settlements. Many become explorers or adventurers, using their speed and charm to navigate the world beyond their homes."
         ),
         "features": "some more info",
         "male_names": [
@@ -520,9 +574,19 @@ race_info = {
 
     "stout_halfling": {
         "title": "Stout Halfling",
-        "description": "Stout halflings are hardier and braver than their cousins, with a resilience that often surprises larger folk.",
+        "description": (
+            "Stout halflings are known for their uncommon resilience, endurance, and remarkable resistance to poison. Their skin tones are usually darker than those of the Lightfoot halflings, and they appear stockier and sturdier.\n\n"
+            "They value the comfort of a safe home, prefer to avoid trouble, but show genuine courage when defending their loved ones.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Halfling\n"
+            "- *Height range*: 2'5\"–3'5\" (75–105 cm)\n"
+            "- *Weight range*: 40–66 lbs (18–30 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 150 years\n"
+            "- *Recommended classes*: Fighter, Rogue, Ranger\n"
+        ),
         "detailed_description": (
-            "Stout halflings are the most robust of their race, enduring both hardship and adversity with cheerful resolve. Many believe they have dwarven ancestry, sharing a knack for resisting poison and a love of hearth and home. Their courage and toughness make them valued companions and formidable survivors."
+            "Stout halflings are hardy and resilient folk, known for their strong builds and steady nerves. They dwell in cozy, close-knit communities hidden in hills, forests, or farms, where fresh earth scents mingle with the warmth of hearth fires. Stouts value loyalty, courage, and perseverance.\n\nWith lifespans around 250 years, they approach life with calm determination and quiet optimism. Stout halflings are tough and resistant to hardship, often showing grit in the face of danger. They are friendly but cautious, preferring to avoid unnecessary conflict while standing firm to protect their own.\n\nMost stouts excel in farming, crafting, or guarding, blending well into larger towns. Many become travelers or adventurers, relying on their endurance and steady focus to overcome challenges."
         ),
         "features": "some more info",
         "male_names": [
@@ -599,9 +663,19 @@ race_info = {
 
     "human": {
         "title": "Human",
-        "description": "Humans are the most adaptable and ambitious people among the common races. Their diversity gives rise to varied cultures, talents, and worldviews.",
+        "description": (
+            "Humans are the most adaptable and ambitious race in the world. They are widespread and known for their ability to thrive in a variety of environments and pursue diverse goals. Their appearances, habits, and outlooks are extremely varied.\n\n"
+            "Often explorers, leaders, and diplomats, humans shape many cultures and traditions.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, one extra language of choice\n"
+            "- *Height range*: 5'0\"–6'2\" (150–188 cm)\n"
+            "- *Weight range*: 115–240 lbs (52–109 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 80 years\n"
+            "- *Recommended classes*: Any class\n"
+        ),
         "detailed_description": (
-            "Humans dominate much of the world, with settlements in every environment. Their lifespans are short by the standards of other races, but their drive to achieve leads to rapid social and technological advancement. Humans can be warriors, wizards, or everything in between, and their variety makes them both unpredictable and endlessly fascinating."
+            "Humans are adaptable and ambitious folk, known for their diverse builds and driven spirits. They thrive in varied environments, from bustling cities to sprawling farmlands, where the scents of smoke, earth, and sea blend with a constant hum of activity. Humans value innovation, resilience, and the pursuit of personal goals.\n\nWith lifespans around 80 to 100 years, they approach life with determination and a willingness to embrace change. Humans are resourceful and versatile, able to face challenges with courage and creativity. They can be both friendly and competitive, often striving to leave a mark on the world.\n\nMost humans excel in a wide range of professions, from artisans to warriors and scholars. Many become explorers or leaders, their ambition and adaptability carrying them far beyond their homelands."
         ),
         "features": "some more info",
         "male_names": [
@@ -665,9 +739,19 @@ race_info = {
     },
     "dragonborn": {
         "title": "Dragonborn",
-        "description": "Dragonborn are proud, honorable, and driven by a strong sense of self-improvement and legacy derived from their draconic heritage. They are tall, powerful, and marked by scales and iconic breath weapons.",
+        "description": (
+            "Dragonborn are proud and strong warrior nomads, carrying the magical blood, unique appearance, and brave spirit inherited from dragons. Their scaled skin varies in color, reflecting their draconic ancestry.\n\n"
+            "They honor tradition, glory, and family bonds, often displaying fortitude and determination.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Draconic\n"
+            "- *Height range*: 6'0\"–6'8\" (183–203 cm)\n"
+            "- *Weight range*: 220–320 lbs (100–145 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 80 years\n"
+            "- *Recommended classes*: Paladin, Fighter, Sorcerer\n"
+        ),
         "detailed_description": (
-            "Descended from dragons, dragonborn strive to emulate their ancestors' greatness and honor. They live by strict codes of conduct, value personal achievement, and tend to be loyal and steadfast. Few match a dragonborn's drive for glory and self-mastery, while their imposing presence and breath weapon make them fearsome in battle."
+            "Dragonborn are proud and determined folk, known for their draconic heritage and imposing presence. They make their homes in well-ordered communities, often surrounded by the echoes of ancient legends and the gleam of polished scales. The scent of smoke, metal, and incense lingers in their halls, a reminder of their ancestry and deep traditions. Dragonborn value honor, strength, and personal excellence.\n\nWith lifespans around 80 years, they approach life with bold ambition and unwavering resolve. Dragonborn are resilient in the face of adversity and place great importance on their word and personal reputation. They tend to be confident and direct, striving to rise above challenges and uphold the ideals of their ancestors.\n\nMost dragonborn excel as warriors, leaders, or artisans, their talents shaped by a drive to prove themselves and bring glory to their clan. Many become adventurers, drawn by a desire to leave a lasting legacy and live up to the mighty deeds of dragons past."
         ),
         "features": "some more info",
         "male_names": [
@@ -739,9 +823,19 @@ race_info = {
 
     "forest_gnome": {
         "title": "Forest Gnome",
-        "description": "Forest gnomes are shy, good-natured, and mischievous woodland folk known for their love of animals, protective magical abilities, and stealth.",
+        "description": (
+            "Gnomes are a small but exceedingly curious race, valuing invention, magic, and simple joys of life. Forest gnomes are independent and secretive, while rock gnomes are masters of mechanics and craftsmanship.\n\n"
+            "Gnomes are characterized by cheerfulness, energy, and boundless optimism.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Gnomish\n"
+            "- *Height range*: 3'0\"–4'0\" (90–120 cm)\n"
+            "- *Weight range*: 40–45 lbs (18–20 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 500 years\n"
+            "- *Recommended classes*: Wizard, Rogue\n"
+        ),
         "detailed_description": (
-            "Rarely seen by outsiders, forest gnomes are reclusive but deeply magical members of woodland communities. They prefer cleverness over confrontation, communicate with small animals, and use illusory magic to avoid trouble. Their lighthearted humor and creativity make them skilled musicians and craftsmen."
+            "Forest gnomes are secretive and lively folk, known for their deep bond with the natural world and gentle magic. They make their homes in quiet woodland glades, often hidden from view and woven seamlessly into the landscape, where the scents of moss, wildflowers, and rich earth fill the air. Forest gnomes cherish harmony, kindness, and the simple joys found in nature.\n\nWith lifespans of about 350 to 500 years, they view life as an ongoing adventure, greeting each day with bright curiosity and a mischievous smile. Forest gnomes are clever and cautious, excelling at stealth and illusion, yet always ready to lend a helping hand to friends or creatures in need. \n\nMost forest gnomes are talented in stealth, herbalism, and animal friendship, blending seamlessly into the woods. Curiosity often leads them beyond their groves, where they become skilled scouts, storytellers, or traveling companions, always guided by their playful spirit and love of peace."
         ),
         "features": "some more info",
         "male_names": [
@@ -817,9 +911,19 @@ race_info = {
 
     "rock_gnome": {
         "title": "Rock Gnome",
-        "description": "Rock gnomes are curious, intelligent, and naturally inventive. Their love of machines, alchemy, and lore makes them skilled craftsmen and tinkerers.",
+       "description": (
+            "Gnomes are a small but exceedingly curious race, valuing invention, magic, and simple joys of life. Forest gnomes are independent and secretive, while rock gnomes are masters of mechanics and craftsmanship.\n\n"
+            "Gnomes are characterized by cheerfulness, energy, and boundless optimism.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Gnomish\n"
+            "- *Height range*: 3'0\"–4'0\" (90–120 cm)\n"
+            "- *Weight range*: 40–45 lbs (18–20 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 500 years\n"
+            "- *Recommended classes*: Wizard, Rogue\n"
+        ),
         "detailed_description": (
-            "Rock gnomes are the most common gnome subrace and are renowned for their natural inventiveness and technical skill. They often delight in creating small wonders, gadgets, or clever tricks, filling their homes with mechanical marvels and fantastical tools. Cheerful and energetic, they cherish family, tradition, and discovery."
+            "Rock gnomes are inventive and cheerful, celebrated for their passion for tinkering and natural curiosity. Living in snug burrows or bustling underground workshops, they surround themselves with sparkling gems, clever contraptions, and the hum of busy activity. The scent of oil, metal, and fresh stone lingers in their realms, reflecting their love for craftsmanship and discovery.\n\nWith life spans reaching 400 to 600 years, rock gnomes approach life as a puzzle to be solved and a story to be told. They are optimistic and persistent, rarely discouraged by setbacks, always eager to test a theory or invent something new. Rock gnomes value ingenuity, humor, and the bonds of friendship above all.\n\nMost excel as artisans, alchemists, or inventors—always ready to tinker or share their clever creations. Many adventure outward, hoping to uncover lost secrets, make new friends, or simply add excitement to their lives, carrying their inventive spirit and bright optimism wherever they go."
         ),
         "features": "some more info",
         "male_names": [
@@ -849,7 +953,7 @@ race_info = {
         "height_range": "2'11\"–3'11\" (90–120 cm)",
         "weight_range": "44–66 lbs (20–30 kg)",
         "recommended_classes": [
-            "Artificer", "Wizard"
+            "Rogue", "Wizard"
         ],
         "abilities": [
             {
@@ -895,9 +999,19 @@ race_info = {
 
     "half_elf": {
         "title": "Half-Elf",
-        "description": "Half-elves blend the best of human versatility and elven grace. They often act as diplomats or wanderers, well-suited to a life between worlds.",
+        "description": (
+            "Half-elves combine the charisma of humans with the refined elegance of elves, occupying a unique position between two worlds. Thanks to their adaptable nature and diplomatic talents, they find friends everywhere.\n\n"
+            "They inherit timeless beauty but lack strong ties to any one culture, allowing them to adapt easily to any environment.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Elvish\n"
+            "- *Height range*: 5'0\"–6'0\" (150–180 cm)\n"
+            "- *Weight range*: 100–180 lbs (45–80 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 180 years\n"
+            "- *Recommended classes*: Bard, Sorcerer, Warlock\n"
+        ),
         "detailed_description": (
-            "Blessed with elven longevity and charm as well as human adaptability, half-elves have no true homeland. They thrive in both human societies and among elves, though they don’t always feel they belong in either. Charismatic and perceptive, many half-elves find themselves as natural mediators and leaders."
+            "Half-elves are adaptable and charismatic, blending the grace of elven heritage with human vigor. They often dwell between worlds, equally at home in bustling cities or tranquil forests, places alive with diversity and possibility. The mingled scents of flower, parchment, and distant hearths mark their communities. Half-elves value freedom, curiosity, and the desire to belong.\n\nWith lifespans averaging around 180 years, half-elves see the world with open eyes, embracing a multitude of experiences. They are resilient in the face of adversity, thriving on versatility and enriched by both cultures. Friendly and diplomatic, they form bonds easily but often struggle to find a place to truly call home.\n\nMost half-elves excel as diplomats, artists, or travelers, drawing upon their diverse heritage. Many pursue adventure out of curiosity or the need to prove themselves, forging unique destinies as bridges between peoples, their lives marked by courage, wonder, and a longing for connection."
         ),
         "features": "some more info",
         "male_names": [
@@ -969,9 +1083,19 @@ race_info = {
 
     "half_orc": {
         "title": "Half-Orc",
-        "description": "Half-orcs are fierce, powerful, and energetic, often caught between the civilized world and the savage traditions of orc tribes.",
+        "description": (
+            "Half-orcs are known for their powerful build and fierce temperament. Often facing prejudice, few can challenge their bravery and endurance. A half-orc’s life is a constant struggle for respect and a place in the world.\n\n"
+            "They draw strength from rage and possess an innate ability to survive even the harshest conditions.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Orc\n"
+            "- *Height range*: 5'10\"–6'6\" (178–198 cm)\n"
+            "- *Weight range*: 180–250 lbs (82–113 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 75 years\n"
+            "- *Recommended classes*: Barbarian, Fighter\n"
+        ),
         "detailed_description": (
-            "The children of human and orc unions, half-orcs frequently face prejudice but also earn respect for their physical prowess and determination. They excel in harsh environments and arduous tasks, and are often proud of their ability to endure and overcome."
+            "Half-orcs are tough and tenacious, marked by a blend of human resourcefulness and orcish might. They dwell in the rough edges of societies—fortified villages, frontier lands, and sometimes orc tribes—where the scent of sweat, leather, and iron is common. Half-orcs value strength, survival, and respect, tempered with a drive to overcome prejudice.\n\nWith lifespans of about 75 years, half-orcs navigate life with a sense of urgency and determination. They are quick to act and endure hardships with grit, often channeling pain into focused ambition. Both wary of and drawn to community, half-orcs can be fiercely loyal friends or lone wanderers.\n\nMost find their talents in combat, mercenary work, or hunting, standing out for their courage and endurance. Many take up the adventurer’s path to escape biases, seek personal glory, or discover a place where they are accepted, shaped by the struggle to claim respect and honor."
         ),
         "features": "some more info",
         "male_names": [
@@ -1043,9 +1167,19 @@ race_info = {
 
     "tiefling": {
         "title": "Tiefling",
-        "description": "Tieflings are marked by their infernal heritage, manifesting physical traits such as horns, tails, and glowing eyes, as well as an innate gift for arcane magic and resistance to fire.",
+        "description": (
+            "Tieflings are mysterious descendants of ancient pacts with denizens of the Lower Planes. They bear distinctive traits such as horns, tails, and unusual skin colors. Tieflings often face distrust, which strengthens their character.\n\n"
+            "Nonetheless, they seek independence and welcome new opportunities while never forgetting their heritage.\n\n"
+            "*About race*\n\n"
+            "- *Available languages*: Common, Infernal\n"
+            "- *Height range*: 4'11\"–6'2\" (150–188 cm)\n"
+            "- *Weight range*: 110–190 lbs (50–86 kg)\n"
+            "- *Weapons*: None\n"
+            "- *Duration of life*: up to 100 years\n"
+            "- *Recommended classes*: Warlock, Sorcerer, Bard\n"
+        ),
         "detailed_description": (
-            "Bearing the legacy of a fiendish bloodline, tieflings often face suspicion and prejudice, yet they possess a powerful will and resilience. Clever, adaptable, and mysterious, tieflings balance struggle with ambition and frequently walk the line between darkness and virtue."
+            "Tieflings are enigmatic and resolute, bearing the legacy of infernal ancestry in their striking appearance—horns, tails, and skin in hues of crimson, violet, or dark blue. They make their homes on the fringes of society, whether in shadowed city quarters or distant, windswept lands, where the scent of incense and distant fire lingers. Tieflings value independence, sharp wit, and personal strength.\n\nWith lifespans similar to humans, averaging 80 to 100 years, tieflings persevere through adversity with keen ambition and quiet pride. Tieflings are clever, resourceful, and driven, using their intellect and charisma to overcome prejudice and shape their futures.\n\nMost excel in roles that demand cunning and adaptability—spies, warlocks, or diplomats. Many become adventurers seeking freedom, power, or a sense of belonging, their journeys defined by a determination to rise above their heritage and forge their own identity."
         ),
         "features": "some more info",
         "male_names": [

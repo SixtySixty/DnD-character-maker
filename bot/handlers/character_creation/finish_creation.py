@@ -70,7 +70,7 @@ async def finish_character_creation(update, context):
                     f"Appearance: {escape_markdown(character_appearance)}\n"
                     f"Backstory: {escape_markdown(character_backstory_title)}\n"
                     f"Worldview: {escape_markdown(character_worldview_title)}\n"
-                    f"Languages you know:\n {escape_markdown(character_languages_str)}"
+                    f"Languages you know:\n{escape_markdown(character_languages_str)}"
                 )
             )
         ) 
